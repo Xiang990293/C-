@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "E:/APPDATA/line chatbot workshop/what to eat at night ntou"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"xstring": "cpp",
+			"iostream": "cpp",
+			"string": "cpp",
+			"xutility": "cpp",
+			"istream": "cpp",
+			"a034_binary_translate": "cpp",
+			"ostream": "cpp",
+			"sstream": "cpp",
+			"cmath": "cpp",
+			"bitset": "cpp",
+			"random": "cpp"
+		}
+	}
+}
