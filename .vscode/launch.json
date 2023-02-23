@@ -11,7 +11,7 @@
       "cwd": "f:/C++",
       "program": "f:/C++/build/Debug/outDebug",
       "MIMode": "gdb",
-      "miDebuggerPath": "gdb",
+      "miDebuggerPath": "g++.exe",
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",
