@@ -21,7 +21,7 @@ int main(){
 		//calculate ractangle sum in all raws before current one
 		for(int i=1; i<n; i++){
 			for(int j=n; j>0; j--){
-				h_s=[i][j]=h_s[i-1][j]+food[i][j]+h_s[i][j-1]
+				h_s[i][j]=h_s[i-1][j]+food[i][j]+h_s[i][j-1];
 			}
 		}
 		for(int i=0; i<n; i++){
