@@ -1,11 +1,8 @@
 #include<iostream>
-#include<math.h>
 using namespace std;
 
-int main() {
-    int a=51;
-    char b=(char)a;
-    string bb="12345678901234568790";
-    
-    cout << bb.substr(0,floor(10.3));
-}
+int main(){
+    for(int i=0;i<100;i++){
+        cout << i+1 << "哈囉！";
+    }
+};

@@ -39,7 +39,10 @@
     "sstream": "cpp",
     "cmath": "cpp",
     "bitset": "cpp",
-    "random": "cpp"
+    "random": "cpp",
+    "*.tcc": "cpp",
+    "numbers": "cpp"
   },
-  "C_Cpp.errorSquiggles": "Enabled"
+  "C_Cpp.errorSquiggles": "Enabled",
+  "C_Cpp_Runner.useAddressSanitizer": false
 }
