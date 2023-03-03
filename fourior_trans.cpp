@@ -1,22 +1,17 @@
 #include<iostream>
 #include<math.h>
+#include<cmath>
 using namespace std;
 
-const long double pi=3.14159265358979323846264338327950288419716939937510582097494459230781640628620899862803482534211706798;
+const long double pi = 3.141592653589793238L;
 
 long double deg_to_rad(long double deg){
-	return deg*pi/180.0;
+	return deg*pi/180.0L;
 }
 
 long double rad_to_deg(long double rad){
-	return rad/pi*180.0;
+	return rad/pi*180.0L;
 }
-
-class rad{
-public:
-	long double rad;
-
-};
 
 class complex_number {
 	public:
@@ -28,11 +23,13 @@ class complex_number {
 		void plus(complex_number a){
 			this->real += a.real;
 			this->imaginary += a.imaginary;
+			fix(false);
 		}
 		
 		void minus(complex_number a){
 			this->real -= a.real;
 			this->imaginary -= a.imaginary;
+			fix(false);
 		}
 		
 		void multiply(complex_number a){
@@ -40,11 +37,13 @@ class complex_number {
 			long double imaginary = this->imaginary;
 			this->real = real*a.real - imaginary*a.imaginary;
 			this->imaginary = real*a.imaginary + imaginary*a.real;
+			fix(false);
 		}
 		
 		void multiply(long double a){
 			this->real *= a;
 			this->imaginary *= a;
+			fix(false);
 		}
 		
 		void divid(complex_number a){
@@ -53,9 +52,39 @@ class complex_number {
 			long double imaginary = this->imaginary;
 			this->real = (real*a.real + imaginary*a.imaginary)/n;
 			this->imaginary = (imaginary*a.real - real*a.imaginary)/n;
+			fix(false);
+		}
+
+		void power(long long a){
+			complex_number b(1);
+			complex_number c;
+			c = *this;
+			for(long long i=0; i<a; i++){
+				b *= c;
+				cout << "i: " << i << endl;
+				b.show();
+				cout << endl;
+			} 
+			this->real=b.real;
+			this->imaginary=b.imaginary;
+			cout << this->real << " " << this->imaginary << endl;
+			fix(false);
+		}
+
+		void turn(long double theta){
+			long double thetad = rad_to_deg(theta);
+			int a = thetad/360.0L;
+			a >= 1? thetad = thetad-360*a : thetad = thetad;
+			this->ang += deg_to_rad(thetad);
+			fix(true);
 		}
 		
 		complex_number& operator+=(complex_number a){
+			this->plus(a);
+			return *this;
+		}
+
+		complex_number& operator+(complex_number a){
 			this->plus(a);
 			return *this;
 		}
@@ -64,8 +93,18 @@ class complex_number {
 			this->minus(a);
 			return *this;
 		}
+
+		complex_number& operator-(complex_number a){
+			this->minus(a);
+			return *this;
+		}
 		
 		complex_number& operator*=(complex_number a){
+			this->multiply(a);
+			return *this;
+		}
+
+		complex_number& operator*(complex_number a){
 			this->multiply(a);
 			return *this;
 		}
@@ -73,6 +112,21 @@ class complex_number {
 		complex_number& operator/=(complex_number a){
 			this->divid(a);
 			return *this;
+		}
+
+		complex_number& operator/(complex_number a){
+			this->divid(a);
+			return *this;
+		}
+
+		complex_number& operator^=(long long a){
+			this->power(a);
+            return *this;
+		}
+
+		complex_number& operator^(long long a){
+			this->power(a);
+            return *this;
 		}
 
 		complex_number& operator=(complex_number a){
@@ -95,12 +149,6 @@ class complex_number {
 			complex_number ac(a);
 			return *this==ac;
         }
-
-		
-		void turn(long double theta){
-			complex_number a(cos(deg_to_rad(theta)), sin(deg_to_rad(theta)));
-			this->multiply(a);
-		}
 		
 		long double length(){
 			long double real = this->real;
@@ -109,10 +157,11 @@ class complex_number {
 		}
 		
 		void show(){
-			int n = this->imaginary;
-			char p = {0};
-			if(abs(n)==n) p='+';
-			cout << this->real << p << this->imaginary << "i" << endl;
+			long double n = this->imaginary;
+			cout << this->real << endl;
+			if(n<0) cout << this->real << this->imaginary << "i" << endl;
+			else cout << this->real << "+" << this->imaginary << "i" << endl;
+			
 		}
 		
 		complex_number(long double a, long double b){
@@ -145,14 +194,40 @@ class complex_number {
 			return a==0;
         }
 
-		void fix(long double a, long double b,bool is_in_vertical_coordinate){
-			if(is_in_vertical_coordinate){
-				this->real = a*cos(b);
-				this->imaginary = a*sin(b);
+		void fix(bool is_in_right_angle_coordinate){
+			if(is_in_right_angle_coordinate){
+				long double len=this->len;
+				long double ang=this->ang;
+				this->real = len*fxcos(ang);
+				this->imaginary = len*fxsin(ang);
 			}else{
+				long double a=this->real;
+				long double b=this->imaginary;
 				this->len = sqrt(a*a+b*b);
 				this->ang = atan2(b,a);
 			}
+		}
+
+		long double fxcos(long double theta){
+			long double a = cos(theta);
+			complex_number b(0,1);
+			cout << "theta=" << rad_to_deg(theta) << endl;
+			if(rad_to_deg(theta)/90.0L==round(rad_to_deg(theta)/90.0L)){
+				b ^= round(rad_to_deg(theta)/90.0L);
+				a = b.real;
+			}
+			return a;
+		}
+
+		long double fxsin(long double theta){
+			long double a = sin(theta);
+			complex_number b(0,1);
+			cout << "theta=" << rad_to_deg(theta) << endl;
+			if(rad_to_deg(theta)/90.0L==round(rad_to_deg(theta)/90.0L)){
+				b ^= round(rad_to_deg(theta)/90.0L);
+				a = b.imaginary;
+			}
+			return a;
 		}
 };
 
@@ -163,16 +238,18 @@ complex_number fourier_transform(){
 
 int main(){
 	complex_number a(1.0, 0.0);
-	complex_number b(cos(pi/4), sin(pi/4));
-	
-	a.show();
+	complex_number b(0.0, 1.0);
+	cout << round(270/90.0L) << endl;
+	b ^= round(270/90.0L);
 	b.show();
 	cout << endl;
-	
-	for(int i=0; i<8; i++){
-		a.multiply(b);
-		a.show();
-		cout << a.real << endl << endl;
-	}
-	
+	cout << (-(long double)0) << endl;
+
+	// for(int j=0; j<8; j++){
+	// 	cout << "j= " <<j << endl;
+	// 	a.turn(deg_to_rad(45));
+	// 	a.show();
+	// 	cout << a.real << " " << a.imaginary << " "  << a.len << " " << rad_to_deg(a.ang) << endl;
+	// 	cout << endl;
+	// }
 }
