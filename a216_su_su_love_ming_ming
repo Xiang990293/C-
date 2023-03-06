@@ -1,0 +1,34 @@
+#include<iostream>
+using namespace std;
+
+long long f[30000]={0}, g[30000]={0};
+int f_a=0, g_a=0;
+
+void f_d(int a){
+	if(f_a==0){
+		f[1] = 1;
+		for(int i=2; i<=a; i++) f[i] = f[i-1] + i;
+		f_a = a;
+	}else{
+		for(int i=f_a+1; i<=a; i++) f[i] = f[i-1] + i;
+	}
+}
+
+void g_d(int a){
+	if(f_a==0){
+		g[1] = 1;
+		for(int i=2; i<=a; i++) g[i] = f[i] + g[i-1];
+		g_a = a;
+	}else{
+		for(int i=g_a+1; i<=a; i++) g[i] = f[i] + g[i-1];
+	}	
+}
+
+int main(){
+	int n;
+	while(cin >> n){
+		f_d(n);
+		g_d(n);
+		cout << f[n] << " " << g[n] << endl;
+	}
+}
