@@ -216,14 +216,9 @@ class complex_number {
 		}
 
 		long double fxsin(long double theta){
-			complex_number b(0,1);
-			b ^= round(rad_to_deg(theta)/90.0L);
-			cout << rad_to_deg(theta) << ", " << b.imaginary << endl;
-
 			long double a = sin(theta);
-			b = complex_number(0,1);
+			complex_number b(0,1);
 			if(rad_to_deg(theta)/90.0L==round(rad_to_deg(theta)/90.0L)){
-				b ^= round(rad_to_deg(theta)/90.0L);
 				a = b.imaginary;
 			}
 			return a;
@@ -237,7 +232,9 @@ complex_number fourier_transform(){
 
 int main(){
 	complex_number a(1.0, 0.0);
-	cout << sin(deg_to_rad(360)) << endl;
+	// cout << (rad_to_deg(deg_to_rad(360))/90.0L)<<endl;
+	// cout << round(rad_to_deg(deg_to_rad(360))/90.0L)<<endl;
+	// cout << (rad_to_deg(deg_to_rad(360))/90.0L==round(rad_to_deg(deg_to_rad(360))/90.0L))<<endl;
 	// complex_number b(0.0, 1.0);
 	// cout << round(rad_to_deg(deg_to_rad(360))/90.0L)<<endl;
 	// b ^= 4;
@@ -250,10 +247,10 @@ int main(){
 	// b.turn(0);
 	// b.show();
 
-	// for(int j=0; j<8; j++){
-	// 	a.turn(deg_to_rad(45));
-	// }
-	// a.show();
-	// cout << a.imaginary << endl;
-	// cout << endl;
+	for(int j=0; j<8; j++){
+		a.turn(deg_to_rad(45));
+	}
+	a.show();
+	cout << a.imaginary << endl;
+	cout << endl;
 }
