@@ -22,7 +22,8 @@
 			"bitset": "cpp",
 			"random": "cpp",
 			"queue": "cpp",
-			"stack": "cpp"
+			"stack": "cpp",
+			"fstream": "cpp"
 		}
 	}
 }

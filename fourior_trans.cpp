@@ -59,15 +59,9 @@ class complex_number {
 			complex_number b(1);
 			complex_number c;
 			c = *this;
-			for(long long i=0; i<a; i++){
-				b *= c;
-				cout << "i: " << i << endl;
-				b.show();
-				cout << endl;
-			} 
+			for(long long i=0; i<a; i++) b *= c;
 			this->real=b.real;
 			this->imaginary=b.imaginary;
-			cout << this->real << " " << this->imaginary << endl;
 			fix(false);
 		}
 
@@ -158,7 +152,6 @@ class complex_number {
 		
 		void show(){
 			long double n = this->imaginary;
-			cout << this->real << endl;
 			if(n<0) cout << this->real << this->imaginary << "i" << endl;
 			else cout << this->real << "+" << this->imaginary << "i" << endl;
 			
@@ -206,12 +199,15 @@ class complex_number {
 				this->len = sqrt(a*a+b*b);
 				this->ang = atan2(b,a);
 			}
+			this->real=this->real==0?0:this->real;
+			this->imaginary=this->imaginary==0?0:this->imaginary;
+			this->len=this->len==0?0:this->len;
+			this->ang=this->ang==0?0:this->ang;
 		}
 
 		long double fxcos(long double theta){
 			long double a = cos(theta);
 			complex_number b(0,1);
-			cout << "theta=" << rad_to_deg(theta) << endl;
 			if(rad_to_deg(theta)/90.0L==round(rad_to_deg(theta)/90.0L)){
 				b ^= round(rad_to_deg(theta)/90.0L);
 				a = b.real;
@@ -222,9 +218,9 @@ class complex_number {
 		long double fxsin(long double theta){
 			long double a = sin(theta);
 			complex_number b(0,1);
-			cout << "theta=" << rad_to_deg(theta) << endl;
 			if(rad_to_deg(theta)/90.0L==round(rad_to_deg(theta)/90.0L)){
 				b ^= round(rad_to_deg(theta)/90.0L);
+				b.show();
 				a = b.imaginary;
 			}
 			return a;
@@ -238,18 +234,11 @@ complex_number fourier_transform(){
 
 int main(){
 	complex_number a(1.0, 0.0);
-	complex_number b(0.0, 1.0);
-	cout << round(270/90.0L) << endl;
-	b ^= round(270/90.0L);
-	b.show();
-	cout << endl;
-	cout << (-(long double)0) << endl;
 
-	// for(int j=0; j<8; j++){
-	// 	cout << "j= " <<j << endl;
-	// 	a.turn(deg_to_rad(45));
-	// 	a.show();
-	// 	cout << a.real << " " << a.imaginary << " "  << a.len << " " << rad_to_deg(a.ang) << endl;
-	// 	cout << endl;
-	// }
+	for(int j=0; j<8; j++){
+		a.turn(deg_to_rad(45));
+	}
+	a.show();
+	cout << a.real << " " << a.imaginary << " "  << sin(0) << " " << rad_to_deg(a.ang) << endl;
+	cout << endl;
 }
