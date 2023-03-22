@@ -13,6 +13,16 @@ long double rad_to_deg(long double rad){
 	return rad/pi*180.0L;
 }
 
+long double angle_simplify(long double rad){
+	if((rad_to_deg(rad)< -1*180.0L) || (rad_to_deg(rad) >=180.0L)){
+		long double deg = rad_to_deg(rad);
+		int semicircle = (floor(deg/180.0L));
+		return deg_to_rad((abs(semicircle) % 2 == 1)? (deg - 180.0L*(semicircle+1)) : (deg - 180.0L*semicircle));
+	}else{
+		return rad;
+	}
+}
+
 class complex_number {
 	public:
 		long double real;
@@ -55,21 +65,13 @@ class complex_number {
 			fix(false);
 		}
 
-		void power(long long a){
-			complex_number b(1);
-			complex_number c;
-			c = *this;
-			for(long long i=0; i<a; i++) b *= c;
-			this->real=b.real;
-			this->imaginary=b.imaginary;
-			fix(false);
+		void power(long double a){
+			this->len = pow((this->len),a);
+			this->ang = this->ang*a;
 		}
 
 		void turn(long double theta){
-			long double thetad = rad_to_deg(theta);
-			int a = thetad/360.0L;
-			a >= 1? thetad = thetad-360*a : thetad = thetad;
-			this->ang += deg_to_rad(thetad);
+			this->ang = angle_simplify(deg_to_rad(rad_to_deg(this->ang) + rad_to_deg(angle_simplify(theta))));
 			fix(true);
 		}
 		
@@ -118,6 +120,16 @@ class complex_number {
             return *this;
 		}
 
+		complex_number& operator%(long double a){
+			this->turn(a);
+			return *this;
+		}
+
+		complex_number& operator%=(long double a){
+			this->turn(a);
+			return *this;
+		}
+
 		complex_number& operator^(long long a){
 			this->power(a);
             return *this;
@@ -161,14 +173,14 @@ class complex_number {
 			real = a;
 			imaginary = b;
 			len = sqrt(a*a+b*b);
-			ang = atan2(b,a);
+			ang = (a==0)?(abs(b)!=b)?270:90:atan(b/a);;
 		}
 
 		complex_number(long double a){
 			real = a;
 			imaginary = 0;
 			len = sqrt(a*a+0);
-			ang = atan2(0,a);
+			ang = (abs(a)!=a)?180:0;
 		}
 		
 		complex_number(){
@@ -197,7 +209,7 @@ class complex_number {
 				long double a=this->real;
 				long double b=this->imaginary;
 				this->len = sqrt(a*a+b*b);
-				this->ang = atan2(b,a);
+				this->ang = (a==0)?(abs(b)!=b)?270:90:atan(b/a);
 			}
 			this->real=this->real==0?0:this->real;
 			this->imaginary=this->imaginary==0?0:this->imaginary;
@@ -207,19 +219,32 @@ class complex_number {
 
 		long double fxcos(long double theta){
 			long double a = cos(theta);
-			complex_number b(0,1);
 			if(rad_to_deg(theta)/90.0L==round(rad_to_deg(theta)/90.0L)){
-				b ^= round(rad_to_deg(theta)/90.0L);
-				a = b.real;
+				complex_number one(0,1);
+				complex_number b(0,1);
+				long double added_theta = rad_to_deg(theta)+180.0L;
+				switch(((int)round(added_theta/90.0L)+2)%4){
+					case(0): one *= b;
+					case(3): one *= b;
+					case(2): one *= b;
+				}
+				a = one.real;
 			}
 			return a;
 		}
 
 		long double fxsin(long double theta){
 			long double a = sin(theta);
-			complex_number b(0,1);
 			if(rad_to_deg(theta)/90.0L==round(rad_to_deg(theta)/90.0L)){
-				a = b.imaginary;
+				complex_number one(0,1);
+				complex_number b(0,1);
+				long double added_theta = rad_to_deg(theta)+180.0L;
+				switch(((int)round(added_theta/90.0L)+2)%4){
+					case(0): one *= b;
+					case(3): one *= b;
+					case(2): one *= b;
+				}
+				a = one.imaginary;
 			}
 			return a;
 		}
@@ -232,25 +257,14 @@ complex_number fourier_transform(){
 
 int main(){
 	complex_number a(1.0, 0.0);
-	// cout << (rad_to_deg(deg_to_rad(360))/90.0L)<<endl;
-	// cout << round(rad_to_deg(deg_to_rad(360))/90.0L)<<endl;
-	// cout << (rad_to_deg(deg_to_rad(360))/90.0L==round(rad_to_deg(deg_to_rad(360))/90.0L))<<endl;
-	// complex_number b(0.0, 1.0);
-	// cout << round(rad_to_deg(deg_to_rad(360))/90.0L)<<endl;
-	// b ^= 4;
-	// b.show();
-	// b.turn(0);
-	// b.show();
-	// b = complex_number(0.0, 1.0);
-	// b ^= round(rad_to_deg(deg_to_rad(360))/90.0L);
-	// b.show();
-	// b.turn(0);
-	// b.show();
-
-	for(int j=0; j<8; j++){
-		a.turn(deg_to_rad(45));
+	complex_number b(0.0, 1.0);
+	
+	for(int i=-1800; i<1800; i++){
+		cout << i << ", ";
+		a.turn(deg_to_rad(1));
+		a.show();
 	}
 	a.show();
-	cout << a.imaginary << endl;
-	cout << endl;
+		
+	
 }
