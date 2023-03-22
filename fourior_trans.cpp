@@ -260,8 +260,8 @@ int main(){
 	complex_number b(0.0, 1.0);
 	
 	for(int i=-1800; i<1800; i++){
-		cout << i << ", ";
 		a.turn(deg_to_rad(1));
+		cout << rad_to_deg(a.ang) << ", ";
 		a.show();
 	}
 	a.show();
