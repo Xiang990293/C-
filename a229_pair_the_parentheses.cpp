@@ -62,23 +62,17 @@ string replace_last_parentheses(string str, vector<size_t>& replaced_positions) 
 }
 
 int main() {
-    while (true) {
-        // Get input n from user
-        int n;
-        cout << "Enter a positive integer n: ";
-        cin >> n;
-        if (n <= 0) {
-            // End program if n is not positive
-            break;
-        }
-        // Create a string with n left parentheses and n right parentheses
+    int n;
+    while (cin >> n) {
+        if (n <= 0 || n>13) break;
+        
         string str(n, '(');
         str.append(n, ')');
-        // Start recursion to replace "()" with ")("
+
         vector<size_t> replaced_positions(str.length(), string::npos);
         str = replace_last_parentheses(str, replaced_positions);
-        // Print the result
-        cout << "Result: " << str << endl;
+        
+        cout << str << endl;
     }
     return 0;
 }

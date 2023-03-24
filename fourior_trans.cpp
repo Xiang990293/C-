@@ -166,7 +166,13 @@ class complex_number {
 			long double n = this->imaginary;
 			if(n<0) cout << this->real << this->imaginary << "i" << endl;
 			else cout << this->real << "+" << this->imaginary << "i" << endl;
-			
+		}
+
+		string tostring(){
+			string real = to_string(this->real);
+			string imaginary = to_string(this->imaginary);
+			if(this->imaginary<0) return real + imaginary+"i";
+			else return real + "+" + imaginary+"i";
 		}
 		
 		complex_number(long double a, long double b){
@@ -259,12 +265,23 @@ int main(){
 	complex_number a(1.0, 0.0);
 	complex_number b(0.0, 1.0);
 	
+	cout << "角度\t真值\t誤差對數\t誤差對數率\t誤差對數百分率\t數值" << endl;
 	for(int i=-1800; i<1800; i++){
-		a.turn(deg_to_rad(1));
-		cout << rad_to_deg(a.ang) << ", ";
-		a.show();
+		cout << rad_to_deg(a.ang);
+		cout << "\t\t" << round(rad_to_deg(a.ang));
+		cout << "\t\t" << log2(abs(rad_to_deg(a.ang)-round(rad_to_deg(a.ang))));
+		cout << "\t" << log2(abs(rad_to_deg(a.ang)-round(rad_to_deg(a.ang)))/abs(round(rad_to_deg(a.ang))));
+		cout << "\t" << log2(abs(rad_to_deg(a.ang)-round(rad_to_deg(a.ang)))/abs(round(rad_to_deg(a.ang))))*100 << "%";
+		cout << "\t" << a.tostring() << endl;
+		a.turn(deg_to_rad(359));
 	}
+
+	cout << rad_to_deg(a.ang);
+	cout << "\t\t" << round(rad_to_deg(a.ang));
+	cout << "\t\t" << log2(abs(rad_to_deg(a.ang)-round(rad_to_deg(a.ang))));
+	cout << "\t" << log2(abs(rad_to_deg(a.ang)-round(rad_to_deg(a.ang))))/log2(abs(round(rad_to_deg(a.ang))));
+	cout << "\t" << log2(abs(rad_to_deg(a.ang)-round(rad_to_deg(a.ang)))/abs(round(rad_to_deg(a.ang))))*100 << "%";
+	cout << "\t" << a.tostring() << endl;
 	a.show();
-		
 	
 }
