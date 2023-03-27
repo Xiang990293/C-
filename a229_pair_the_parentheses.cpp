@@ -2,7 +2,15 @@
 using namespace std;
 
 string pairchanger(string a){
-	for(int i=2*(n-1)-1-1; i>=0; i--){
+	//making binpos, position with binary storing
+	unsigned int binpos = 0b0, btemp=0b0;
+	for(int i=a.length(); i>0; i--){
+		binpos <<= 1;
+		binpos += (a[i]=='('&& a[i+1]==')');
+	}
+	
+	//find 1 in binpos
+	for(int i=a.length()-1; i>=0; i--){
 		btemp = binpos >> i;
 		cout << btemp << endl;
 		binpos -= btemp << i;
@@ -31,14 +39,7 @@ void parenthesespairer(int n){
 	}
 	a+=b;
 	
-	//making binpos, position with binary storing
-	unsigned int binpos = 0b0, btemp=0b0;
-	for(int i=2*(n-1)-1; i>0; i--){
-		binpos <<= 1;
-		binpos += (a[i]=='('&& a[i+1]==')');
-	}
-	
-	pairchanger(string a); 
+	pairchanger(a); 
 	
 	return;
 }
