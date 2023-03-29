@@ -23,7 +23,8 @@
 			"random": "cpp",
 			"queue": "cpp",
 			"stack": "cpp",
-			"fstream": "cpp"
+			"fstream": "cpp",
+			"iosfwd": "cpp"
 		}
 	}
 }

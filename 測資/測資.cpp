@@ -6,7 +6,7 @@ using namespace std;
 int main(){
 	string m;
 	while(getline(cin, m)){
-		string pattern("\s")
+		string pattern("\\s");
 		char oper;
 		for(int i=0; i<m.length(); i++){
 			
