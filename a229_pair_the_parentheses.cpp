@@ -29,7 +29,7 @@ string pairchanger(string a, unsigned short start, unsigned short end, string en
 			//?
 			cout << a.replace(i,2,")(") << endl;
 			//?
-			pairchanger(a.replace(i,2,")(").substr(end-i), start, end, endif);
+			cout << a.substr(1) << pairchanger(a.replace(i,2,")(").substr(end-i), start, end, endif) << endl;
 		}
 		binpos -= btemp << i;
 	}
