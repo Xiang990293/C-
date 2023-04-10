@@ -5,6 +5,8 @@ using namespace std;
 
 int main(){
 	string m;
+	bool havespace = false;
+	bool both = false;
 	while(getline(cin, m)){
 		string pattern("\\s");
 		char oper;
