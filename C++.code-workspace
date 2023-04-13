@@ -24,7 +24,10 @@
 			"queue": "cpp",
 			"stack": "cpp",
 			"fstream": "cpp",
-			"iosfwd": "cpp"
+			"iosfwd": "cpp",
+			"*.tcc": "cpp",
+			"unordered_map": "cpp",
+			"string_view": "cpp"
 		}
 	}
 }

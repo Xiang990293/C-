@@ -11,9 +11,7 @@ const char symble[] = {'(',')'};
 int num_front(string s, int i){
 	string a = "";
 	int j=0,l=0;
-	for(j=i-1,l=1; s[j]!='+'&&s[j]!='$'&&s[j]!='*'&&s[j]!='/'&&s[j]!='%'&&s[j]!='#';j--){
-		l++;
-	}
+	for(j=i-1,l=1; s[j]!='+'&&s[j]!='$'&&s[j]!='*'&&s[j]!='/'&&s[j]!='%'&&s[j]!='#';j--) l++;
 	
 	return stoi(s.substr(j+1,l));
 }
@@ -21,9 +19,7 @@ int num_front(string s, int i){
 int num_back(string s, int i){
 	string a = "";
 	int j=0,l=0;
-	for(j=i+1,l=1; s[j]!='+'&&s[j]!='$'&&s[j]!='*'&&s[j]!='/'&&s[j]!='%'&&s[j]!='#';j++){
-		l++;
-	}
+	for(j=i+1,l=1; s[j]!='+'&&s[j]!='$'&&s[j]!='*'&&s[j]!='/'&&s[j]!='%'&&s[j]!='#';j++) l++;
 	
 	return stoi(s.substr(i+1,l));
 }
@@ -40,7 +36,20 @@ string ans(string s){
 	return s.substr(1,s.length()-2);
 }
 
+string simplify_sign(string formula){
+	string dictionary[2][4]={{"--","+-","-+","++"},{"+","-","-","+"}};
+	int test = formula.find(dictionary[1][0]);
+	cout << "" << endl;
+
+	for(int i=0; i<4; i++) (formula.find(dictionary[i][0]))? formula = formula.replace(formula.find(dictionary[i][0]),2,dictionary[i][1]):0;
+	
+	return formula;
+}
+
 string math_logic(string iformula){
+	iformula = simplify_sign(iformula);
+
+	//jump into parentheses first
 	for(int i=0; i<iformula.length(); i++){
 		if(iformula[i]=='('){
 			int substart = i+1;
@@ -60,18 +69,20 @@ string math_logic(string iformula){
 			iformula = iformula.replace(substart-1, sublength+1, ans(math_logic('#'+iformula.substr(substart,sublength-1)+'#')));
 		}
 	}
+
+	//actaully do the math
 	for(int i=0; i<iformula.length(); i++){
 		switch(iformula[i]){
-			case '*':{
+			case '*':{ //multiply
 				string subed_str = sub_form(iformula,i);
 				iformula = iformula.replace(iformula.find(subed_str), subed_str.length(), to_string(num_front(iformula,i)*num_back(iformula,i)));
 				i=0;
 			}break;
 
-			case '/':{
+			case '/':{ //divide
 				if(num_back(iformula,i)){
 					string subed_str = sub_form(iformula,i);
-					iformula = iformula.replace(iformula.find(subed_str), subed_str.length(), to_string(num_front(iformula,i)/num_back(iformula,i)));
+					iformula = iformula.replace(iformula.find(subed_str), subed_str.length(), to_string((long double)num_front(iformula,i)/(long double)num_back(iformula,i)));
 					i=0;
 				}else{
 					iformula = "#0#";
@@ -79,7 +90,7 @@ string math_logic(string iformula){
 				}
 			}break;
 
-			case '%':{
+			case '%':{ //find remainder
 				if(num_back(iformula,i)){
 					string subed_str = sub_form(iformula,i);
 					iformula = iformula.replace(iformula.find(subed_str), subed_str.length(), to_string(num_front(iformula,i)%num_back(iformula,i)));
@@ -91,15 +102,16 @@ string math_logic(string iformula){
 			}break;
 		}
 	}
+	
 	for(int i=0; i<iformula.length(); i++){
 		switch(iformula[i]){
-			case '+':{
+			case '+':{ //addition
 				string subed_str = sub_form(iformula,i);
 				iformula = iformula.replace(iformula.find(subed_str), subed_str.length(), to_string(num_front(iformula,i)+num_back(iformula,i)));
 				i=0;
 			}break;
 
-			case '$':{
+			case '$':{ //subtraction
 				string subed_str = sub_form(iformula,i);
 				iformula = iformula.replace(iformula.find(subed_str), subed_str.length(), to_string(num_front(iformula,i)-num_back(iformula,i)));
 				i=0;
