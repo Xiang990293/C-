@@ -36,18 +36,18 @@ string ans(string s){
 	return s.substr(1,s.length()-2);
 }
 
-string simplify_sign(string formula){
-	string dictionary[2][4]={{"--","+-","-+","++"},{"+","-","-","+"}};
-	int test = formula.find(dictionary[1][0]);
-	cout << "" << endl;
+// string simplify_sign(string formula){
+// 	string dictionary[2][4]={{"--","+-","-+","++"},{"+","-","-","+"}};
+// 	int test = formula.find(dictionary[1][0]);
+// 	cout << "" << endl;
 
-	for(int i=0; i<4; i++) (formula.find(dictionary[i][0]))? formula = formula.replace(formula.find(dictionary[i][0]),2,dictionary[i][1]):0;
+// 	for(int i=0; i<4; i++) (formula.find(dictionary[i][0]))? formula = formula.replace(formula.find(dictionary[i][0]),2,dictionary[i][1]):0;
 	
-	return formula;
-}
+// 	return formula;
+// }
 
 string math_logic(string iformula){
-	iformula = simplify_sign(iformula);
+	// iformula = simplify_sign(iformula);
 
 	//jump into parentheses first
 	for(int i=0; i<iformula.length(); i++){

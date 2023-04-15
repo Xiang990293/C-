@@ -12,20 +12,22 @@ int sign(int a){
 	else return a/abs(a);
 }
 
-double cal(double a, double b){
-	return a/b;
+string cal(double a, double b){
+	if (b==0) return "nan";
+	else return to_string(a/b);
 }
 
-int cal(int mode, int a, int b){
+string cal(int mode, int a, int b){
 	switch(mode){
 		case 0:
-			return a+b;
+			return to_string(a+b);
 		case 1:
-			return a-b;
+			return to_string(a-b);
 		case 2:
-			return a*b;
+			return to_string(a*b);
 		case 4:
-			return sign(b)*abs((int)(a-floor(cal(a,b))*b));
+			if (b==0) return "nan";
+			else return to_string(sign(b)*abs((int)(a-floor((double)a/(double)b))*b));
 	}
 	return 0;
 }
