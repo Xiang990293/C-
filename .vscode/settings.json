@@ -15,7 +15,11 @@
   "C_Cpp_Runner.warningsAsError": false,
   "C_Cpp_Runner.compilerArgs": [],
   "C_Cpp_Runner.linkerArgs": [],
-  "C_Cpp_Runner.includePaths": ["g++","gcc","gdb"],
+  "C_Cpp_Runner.includePaths": [
+    "g++",
+    "gcc",
+    "gdb"
+  ],
   "C_Cpp_Runner.includeSearch": [
     "*",
     "**/*"
@@ -44,5 +48,6 @@
     "numbers": "cpp"
   },
   "C_Cpp.errorSquiggles": "enabled",
-  "C_Cpp_Runner.useAddressSanitizer": false
+  "C_Cpp_Runner.useAddressSanitizer": false,
+  "C_Cpp_Runner.showCompilationTime": false
 }

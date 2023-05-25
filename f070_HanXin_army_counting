@@ -2,8 +2,10 @@
 #include<cstdio>
 using namespace std;
 
-inline uint_fast16_t readint(){
-	uint_fast64_t a=0;
+// uint_fast16_t ==> int
+
+inline int readint(){
+	int a=0;
 	char c='0';
 	do{
 		a=(a<<3)+(a<<1)+c-'0';
@@ -11,7 +13,7 @@ inline uint_fast16_t readint(){
 	}while(c>='0'&&c<='9');
 	return a;
 }
-inline void writeint(uint_fast64_t d){
+inline void writeint(int d){
 	if(d==0){
 		putchar(48);
 		return;
@@ -39,7 +41,7 @@ inline void writeint(uint_fast64_t d){
 //}
 
 int main(){
-	uint_fast16_t a1=0;
+	int a1=0;
 	
 	while(a1 = readint()){
 		int b1 = readint();
@@ -49,12 +51,12 @@ int main(){
 		int b3 = readint();
 		
 		//more efficient, but unaccurate...
-//		int b12 = find_value(a1,b1,a2,b2);
-//		int i1 = find_value(a1*a2,b12,a3,b3);
-//		int b13 = find_value(a1,b1,a3,b3);
-//		int i2 = find_value(a1*a3,b12,a2,b2);
-//		writeint(min(i1, i2));
-//		putchar(13); //in ASCII, 13 == "\n", 32 == " "
+		int b12 = find_value(a1,b1,a2,b2);
+		int i1 = find_value(a1*a2,b12,a3,b3);
+		int b13 = find_value(a1,b1,a3,b3);
+		int i2 = find_value(a1*a3,b12,a2,b2);
+		writeint(min(i1, i2));
+		putchar(13); //in ASCII, 13 == "\n", 32 == " "
 
 		//more accurate, but slow...
 		int i=a3+b3;
