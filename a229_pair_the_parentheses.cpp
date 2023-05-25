@@ -2,6 +2,16 @@
 #include<string>
 using namespace std;
 
+int readint(){
+	int a=0;
+	char c='0';
+	do{
+		a=(a<<3)+(a<<1)+c-'0';
+		c=getchar();
+	}while(c>='0'&&c<='9');
+	return a;
+}
+
 unsigned int binposGen(string a, unsigned short start, unsigned short end){
 	unsigned int bp = 0b0;
 	for(int i=start; i<=end; i++){
@@ -12,12 +22,12 @@ unsigned int binposGen(string a, unsigned short start, unsigned short end){
 	return bp;	
 }
 
-string pairchanger(string a, unsigned short start, unsigned short end, string endif){
+string pairchanger(string head, string a, unsigned short start, unsigned short end, string endif){
 	//if input a is in final state given by parenthesespairer(),
 	//return directly to end all recrusion
 	if(a==endif) return a;
 	
-	if(a.length()==3) return a;
+	if(a.length()<=3) return a;
 	
 	//making binpos, position with binary storing
 	unsigned int binpos = binposGen(a,start,end);
@@ -27,13 +37,16 @@ string pairchanger(string a, unsigned short start, unsigned short end, string en
 	for(int i=start; i<=end; i++){
 		btemp = binpos >> end-i;
 		if(btemp&&(binpos!=0)){
-			int length = end-start+1;
-			//?
-			cout << a.replace(i,2,")(") << endl;
-			//?
-			cout << a.substr(i) << pairchanger(a.substr(i)+a.replace(i,2,")(").substr(end-i), i, end, endif) << endl;
+			int length = end-i+1;
+			string replaced = a.replace(i,2,")(");
+//			string front = a.substr(0,i);
+//			printf("%s is the result\n",front.c_str());
+//			string last = replaced.substr(i);
+//			printf("%s is the result\n",last.c_str());
+			printf("%s\n", (head + replaced).c_str());
+			printf("%s\n", pairchanger("", replaced, i, end, endif).c_str());
 		}
-		binpos -= btemp << i;
+		binpos -= btemp << end-i;
 	}
 	
 	return "";
@@ -42,11 +55,11 @@ string pairchanger(string a, unsigned short start, unsigned short end, string en
 void parenthesespairer(int n){
 	if(n==0) return;
 	if(n==1){
-		cout << "()" << endl;
+		printf("()\n");
 		return;
 	}
 	if(n==2){
-		cout << "(())\n()()" << endl;
+		printf("(())\n()()\n");
 		return;
 	}
 	if(n>13) return; //break for too large num
@@ -60,21 +73,21 @@ void parenthesespairer(int n){
 		b+=")";
 	}
 	a+=b;
-	cout << a << endl;
+	printf("%s\n", a.c_str());
 	
 	///set final state be like
 	string final="";
 	for(int i=0; i<n; i++) final+="()";
 	
 	///start recursion
-	pairchanger(a,1,2*(n-1)-1,final); 
+	printf("%s\n", pairchanger("", a, 1, 2*(n-1)-1, final).c_str()); 
 	
 	return;
 }
 
 int main(){
 	int n=0;
-	while(cin>>n) parenthesespairer(n);
+	while(n = readint()) parenthesespairer(n);
 }
 
 /*
