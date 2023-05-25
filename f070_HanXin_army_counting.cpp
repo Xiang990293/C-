@@ -1,5 +1,5 @@
-#include<iostream>
-#include<cstdio>
+#include <iostream>
+#include <cstdio>
 using namespace std;
 
 // uint_fast16_t ==> int
@@ -63,7 +63,7 @@ int main(){
 		
 		while (1){
 			if (i%a1==b1 && i%a2==b2){
-				cout << i <<endl;
+				cout << i << endl;
 				break;
 			}
 			i+=a3;
