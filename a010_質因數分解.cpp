@@ -1,11 +1,10 @@
 #include <math.h>
 #include <iostream>
-
 using namespace std;
 
 int main(){
 	int n;
-	while(cin>>n){
+	while(cin >> n){
 		for(int i = 2; i <= n; i ++){
 			int count = 0;
 			while(n % i == 0){

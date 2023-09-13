@@ -1,8 +1,17 @@
-#include <iostream>
-#include <cstdio>
+#include<iostream>
+#include<cstdio>
+#include<numeric>
 using namespace std;
 
 // uint_fast16_t ==> int
+
+inline int gcd(int a, int b){
+	return b>0?gcd(b, a%b):a;
+}
+
+inline int lcm(int a, int b){
+	return a/gcd(a,b)*b;
+}
 
 inline int readint(){
 	int a=0;
@@ -28,17 +37,11 @@ inline void writeint(int d){
 	for(int i=len-1;i>=0;i--) putchar(n[i]);
 }
 
-//int find_value(int a1, int b1, int a2, int b2){
-//	int i;
-//	for(i = 1; (a1*i + b1)%a2 != b2; ++i);
-//	return a1*i + b1;
-//}
-//
-//int find_value_reverse(int a1, int b1, int a2, int b2){
-//	int i;
-//	for(i = 1; (b1 - a1*i)%a2 != b2; --i);
-//	return b1 - a1*i;
-//}
+int find_min_possible(int a1, int a2, int a3){
+	int j, i = a2*a3;
+	while(j%a1!=1) j+=i;
+	return j;
+}
 
 int main(){
 	int a1=0;
@@ -51,11 +54,10 @@ int main(){
 		int b3 = readint();
 		
 		//more efficient, but unaccurate...
-		int b12 = find_value(a1,b1,a2,b2);
-		int i1 = find_value(a1*a2,b12,a3,b3);
-		int b13 = find_value(a1,b1,a3,b3);
-		int i2 = find_value(a1*a3,b12,a2,b2);
-		writeint(min(i1, i2));
+		int m = lcm(a1, lcm(a2, a3));
+		int factor = find_min_possible(a1, a2, a3)*b1 + find_min_possible(a2, a1, a3)*b2 + find_min_possible(a3, a2, a1)*b3;
+		
+
 		putchar(13); //in ASCII, 13 == "\n", 32 == " "
 
 		//more accurate, but slow...
