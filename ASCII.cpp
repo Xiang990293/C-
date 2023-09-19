@@ -4,11 +4,11 @@ using namespace std;
 
 int main(){
 	int a = 0;
-    cout << "½Ğ¿é¤J­È¡G" << endl;
+    cout << "è«‹è¼¸å…¥å€¼ï¼š" << endl;
     while(cin >> a){
-    	cout << "Âà´«µ²ªG¦p¤U¡G" << endl;
+    	cout << "è½‰æ›çµæœå¦‚ä¸‹ï¼š" << endl;
 		cout << (char)a << endl;
-		cout << "½Ğ¿é¤J­È¡G" << endl; 
+		cout << "è«‹è¼¸å…¥å€¼ï¼š" << endl; 
     }
     return 0;
 }

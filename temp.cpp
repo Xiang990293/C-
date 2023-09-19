@@ -1,30 +1,24 @@
 #include<iostream>
-#include<stack>
+#include<vector>
+#include<math.h>
+#include<complex>
 using namespace std;
 
-// struct point{
-// 	int x, y;
-// 	point(int a, int b){
-// 		x = a;
-// 		y = b;
-// 	}
-// 	int print(){
-// 		cout << "("<<x<<", "<<y<<")"<<endl;
-// 		return 0;
-// 	}
-// };
+vector<double> add(vector<double> v1, vector<double> v2) {
+	int size = v1.size();
+	double sum[size];
+
+    for (int i = 0; i < size; i++) sum[i] = (v1[i] + v2[i]);
+
+	vector<double> s(sum, sum+size);
+
+    return s;
+}
 
 int main(){
-	int compare = 0;
-	switch(compare){
-		case 0:
-			break;
-		case 1:
-			break;
-		case 2:
-			break;
-		case 3:
-			break;
-	}
-	cout << "HI" << endl;
+	bool a = 0;
+	a = ~a;
+	cout << a << endl;
+
+	return 0;
 }
