@@ -55,7 +55,7 @@ int main(){
 		}
 
 		sort(lines, lines+c, &sorting_line);
-
+		
 		stack<line> covered;
 		covered.push(lines[0]);
 		for(int i=1; i<c; i++){
