@@ -14,7 +14,8 @@ struct segment{
 		right=r;
 	}
 	int count(){
-		return right - left +1;
+		if(left>right) return 0;
+		return right - left + 1;
 	}
 	bool Covering(segment b){
 		return ((b.left>=left&&b.left<=right)||((b.right>=left&&b.right<=right)))?true:false;
@@ -33,7 +34,8 @@ int main(){
 		segment section[m];
 		for(int i=0; i<m; i++){
 			cin >> l >> r;
-			section[i] = segment(l, r);
+			if(r>=l) section[i] = segment(l, r);
+			else section[i] = segment(r, l);
 		}
 		sort(section, section+m, &sort_segment);
 		for(int i=1; i<m; i++){
@@ -48,6 +50,10 @@ int main(){
 				case 0:
 					break;
 				case 1:
+					temp = (*a).right;
+					(*a).right = (*b).left-1;
+					(*b).left = (*b).right+1;
+					(*b).right = temp;
 					break;
 				case 2:
 				case 3:
