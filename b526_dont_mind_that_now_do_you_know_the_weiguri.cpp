@@ -14,10 +14,10 @@ struct segment{
 		right=r;
 	}
 	int count(){
-		return right - left;
+		return right - left +1;
 	}
 	bool Covering(segment b){
-		return ((b.left>=left&&b.left<right)||((b.right>left&&b.right<=right)))?true:false;
+		return ((b.left>=left&&b.left<=right)||((b.right>=left&&b.right<=right)))?true:false;
 	}
 };
 
@@ -50,14 +50,10 @@ int main(){
 				case 1:
 					break;
 				case 2:
-					temp = (*a).right;
-					(*a).right = (*b).left;
-					(*b).left = temp;
-					break;
 				case 3:
 					temp = (*a).right;
-					(*a).right = (*b).left;
-					(*b).left = temp;
+					(*a).right = (*b).left-1;
+					(*b).left = temp+1;
 					break;
 			}
 
@@ -67,6 +63,6 @@ int main(){
 		for(int i=0; i<m; i++){
 			count += section[i].count();
 		}
-		cout << count << endl;
+		cout << n - count << endl;
 	}
 }
