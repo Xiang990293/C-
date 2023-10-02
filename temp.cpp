@@ -16,9 +16,7 @@ vector<double> add(vector<double> v1, vector<double> v2) {
 }
 
 int main(){
-	bool a = 0;
-	a = ~a;
-	cout << a << endl;
+	cout << "嗨壓" << endl;
 
 	return 0;
 }
