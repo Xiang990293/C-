@@ -3,43 +3,28 @@
 #include<string>
 using namespace std;
 
+class rabbit{
+public:
+	int weight;
+	int poison_level;
+	rabbit(int w){
+		weight = w;
+		poison_level = 0; 
+	}
+};
+
 int main(){
-	stringstream str;
-	string s;
-	string s2;
-	int xyzwnm[6] = {};
-	while(getline(cin, s)){
-		int point = 0;
-		char now = ' ';
-		string result = "";
-		cout << s << endl;
-		for(int i=0; i<s.length(); i++){
-			now = s[i];
-			if(now!=' '){
-				result += s[i];
-			}else{
-				cout << result << " " << point << endl;
-				xyzwnm[point] = stoi(result);
-				if(point==5) xyzwnm[point] = stoi(result);
-				point++;
-				result = "";
-				continue;
-			}
+	int dimension;
+	int xyzw[5]={0,0,0,0,0}, poison, weight;
+	int i,  j;
+	while(true){
+		if(scanf("%d",&dimension) != 1){
+			break;
 		}
-		cout
-		<< "x:" << xyzwnm[0]
-		<< "y:" << xyzwnm[1] 
-		<< "z:" << xyzwnm[2]  
-		<< "w:" << xyzwnm[3]
-		<< "n:" << xyzwnm[4] 
-		<< "m:" << xyzwnm[5] 
-		<< endl;
-		str.clear();
-		str << s2;
-		int a, b = 0;
-		while(str >> a){
-			b+=a;
+
+		for(i = 0; i < dimension; i++){
+			scanf("%d %d %d %d %d %d",&xyzw[1], &xyzw[2], &xyzw[3], &xyzw[4], &poison, &weight);
+			rabbit tommy(weight);
 		}
-		cout << b << endl;
 	}
 }
