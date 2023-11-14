@@ -1,24 +1,25 @@
 #include<iostream>
-#include<vector>
-#include<math.h>
-#include<complex>
-#include<regex>
 #include<sstream>
 using namespace std;
 
 int main(){
 	stringstream s;
-	string str, a, b, c;
+	string str;
+	int num;
 	float sum, temp;
 	char se;
 	while(getline(cin, str)){
 		s.str("");
 		s.clear();
 		s << str;
+		sum = 0;
 		while(true){
-			s >> a >> b >> c;
+			s >> num;
 			if(s.fail()) break;
-			cout << a << " " << b << " " << c << endl;
+			s >> se;
+			s >> temp;
+			sum += ((num%2)?1:-1)*temp;
 		}
+		cout << sum << endl;
 	}
 }

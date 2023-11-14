@@ -2,7 +2,7 @@
 #include <math.h>
 using namespace std;
 
-const long double pi = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679;
+const long double pi = 3.14159265358979323846264338327950288419716939937510582097494459230781640628620899862803482534211706798;
 
 long double fact(long double a){
     long double x=1;
@@ -42,10 +42,15 @@ long double absol(long double a){
 }
 
 long double root(long double a, int n){
+	if(a == 0) return 0;
     long double num1 = a;
     long double num2 = num1-(power(num1,n)-a)/(n*power(num1,n-1));
-    for(int i = 0; absol(num2-num1)>0.0001 || i<10; i++){
+    for(int i = 0; absol(num2-num1)>0.0000000000000000001 || i<100000; i++){
         //cout << num2 << endl;
+        if(num1 == 0){
+        	cout << "undef" << endl;
+        	return 0;
+		}
         num1 = num2;
         num2 = num1-(power(num1,n)-a)/(n*power(num1,n-1));
     }
@@ -121,10 +126,14 @@ long double cos(long double num, bool isRad){
 }
 
 int main(){
+	cout.precision(30);
     long double x,y;
-    while(cin>>x>>y){
-        cout << sin(x,y) << " " << cos(x,y) << " " << sin(x) << " " << cos(x) << endl;
-    }
+    while(cin >> x){
+    	cout << root(x, 2) << endl;
+	}
+//    while(cin>>x>>y){
+//        cout << sin(x,y) << " " << cos(x,y) << " " << sin(x) << " " << cos(x) << endl;
+//    }
 
     return 0;
 }
