@@ -3,131 +3,127 @@
 #include<stack>
 using namespace std;
 
-string alter_opers = "*/";
-string nor_opers = "+-";
-string parent = "()";
+char current_char; // 現在正在處理的字符
+// level = current_lay
 
-string parentheses(string strm){
-	return "";
-}
+char current_oper = 0; // 目前的運算符，預設為空，遇到非+-*/時也為空，只有遇到+-*/時，設為+-*/
 
-string postix_notation(char a, char op, char b){
-	string re = "";
-	re += a+" ";
-	re += b+" ";
-	re += op;
-	return re;
+int qsize; // 多次宣告的暫時變數
+int i;
+
+string temp = "";
+
+string trans_to_postfix(string infix){
+	int current_lay = 0; // 重設目前所在的副層級
+	int previous_lay = 0; // 重設上一個總層級
+	
+	bool main_current_lay_fall = false; // main_current_lay是否減少
+	int current_lay_full_count = 0;
+	stack<char> opers[2]; // 建立一堆運算符號堆積(不只一個堆積)
+	string temp_answer = "";
+
+	stringstream s;
+	s << infix;
+	int lay;
+
+	while(true){ // 處理該行
+		s >> current_char;  // 直到該行無法處理為止
+		if(s.fail()) break;
+		main_current_lay_fall = false;
+
+		switch(current_char){ // 先判斷優先級
+			case '+':
+				current_lay = 0;
+				current_oper = '+';
+				break;
+			case '-':
+				current_lay = 0;
+				current_oper = '-';
+				break;
+			case '*':
+				current_lay = 1;
+				current_oper = '*';
+				break;
+			case '/':
+				current_lay = 1;
+				current_oper = '/';
+				break;
+			case '(':
+				current_oper = 0;
+				
+				lay = 1;
+				temp = ""
+;				while(lay != 0){
+					s >> current_char;
+					if(current_char == '(') lay++;
+					else if (current_char == ')') lay--;
+					if(lay != 0) temp += string("") + current_char + " ";
+				}
+				temp_answer += trans_to_postfix(temp);
+				break;
+			default:
+				current_oper = 1;
+				current_lay_full_count++;
+				temp_answer += string("") + (current_char) + " ";
+				break;
+		}
+
+		if(previous_lay == current_lay && current_oper != 1){ // 遇到符號或括號，且優先級相等時，優先推送前面的已經有的同級運算
+			qsize = opers[current_lay].size(); // 將優先級較低的運算推送回去
+			for(i = 0; i < qsize; i++){
+				temp_answer += string("") + opers[current_lay].top() + " ";
+				opers[current_lay].pop();
+			}
+		}else if(previous_lay > current_lay && current_oper > 1){ //遇到符號，且優先級降低，優先推送前面的已經有的上級運算
+			qsize = opers[previous_lay].size(); // 將優先級較高的運算推送回去
+			for(i = 0; i < qsize; i++){
+				temp_answer += string("") + opers[previous_lay].top() + " ";
+				opers[previous_lay].pop();
+			}
+
+			qsize = opers[current_lay].size(); // 將優先級較高的運算推送回去
+			for(i = 0; i < qsize; i++){
+				temp_answer += string("") + opers[current_lay].top() + " ";
+				opers[current_lay].pop();
+			}
+		}
+		// cout << "pl=" << previous_lay << ", cl=" << current_lay << ", ch=" << current_char << ", " << temp_answer << endl;
+		if(current_oper != 0 && current_oper != 1) opers[current_lay].push(current_oper);
+		if(current_oper != 1) previous_lay = current_lay;
+	}
+	
+	int remain_current_lay = current_lay + (main_current_lay_fall*current_lay_full_count)*2;
+	for(int l = remain_current_lay; l >= 0; l--){
+		int qsize = opers[l].size(); // 將優先級較低的運算推送回去
+		for(int i = 0; i < qsize; i++){
+			temp_answer += string("") + opers[l].top() + " ";
+			opers[l].pop();
+		}
+	}
+
+	return temp_answer;
 }
 
 int main(){
-	stringstream s;
-	string str;
-	char num;
-	char temp;
-	string answer;
-	int index = 0;
-	int level = 0;
-	int previous_level = 0;
-	char current_oper = ' ';
+	stringstream s; // 處理一整行輸入
+	string str; // 輸入時的整行字串儲存處
 
+	string answer; // 最終轉換結果的儲存處
+
+	// int q = 0;
 	while(getline(cin, str)){ // 讀入新的一行
-		stack<char> opers[100];
+		// q++;
+		// if(q == 27) cout << str << endl;
 		answer = "";
-		s.str("");
-		s.clear();
-		s << str;
-		int laycount = 0;
-		index = 0;
-		bool laycount_fall = false;
-		int lay_full_count = 0;
 
-		while(true){ // 處理該行
-			index++;
-			s >> temp;  // 直到該行無法處理為止
-			if(s.fail()) break;
-			laycount_fall = false;
-
-			switch(temp){ // 先判斷優先級
-				case '+':
-					level = 0;
-					current_oper = '+';
-					lay_full_count = 0;
-					break;
-				case '-':
-					level = 0;
-					current_oper = '-';
-					lay_full_count = 0;
-					break;
-				case '*':
-					level = 1;
-					current_oper = '*';
-					lay_full_count = 0;
-					break;
-				case '/':
-					level = 1;
-					current_oper = '/';
-					lay_full_count = 0;
-					break;
-				case '(':
-					if(index == 1) index--;
-					current_oper = 0;
-					lay_full_count = 0;
-					laycount++;
-					break;
-				case ')':
-					current_oper = 0;
-					laycount_fall = true;
-					lay_full_count++;
-					break;
-				default:
-					current_oper = 0;
-					lay_full_count++;
-					if(index != 1) answer += string(" ") + temp;
-					else answer += temp;
-					break;
-			}
-
-			int current_level = level + laycount*2;
-			if(previous_level > current_level && current_oper != 0){
-				opers[current_level].push(current_oper);
-				for(int l = previous_level; l > current_level; l--){
-					int qsize = opers[l].size(); // 將優先級較低的運算推送回去
-					for(int i = 0; i < qsize; i++){
-						answer += string(" ") + opers[l].top();
-						opers[l].pop();
-					}
-				}
-			}
-			else if(previous_level == current_level && current_oper != 0){ // 當優先級相等時，優先推送前面的已經有的同級運算
-				int qsize = opers[current_level].size(); // 將優先級較低的運算推送回去
-				for(int i = 0; i < qsize; i++){
-					answer += string(" ") + opers[current_level].top();
-					opers[current_level].pop();
-				}
-			}else if(previous_level == current_level && current_oper == 0){
-				int qsize = opers[current_level].size(); // 將優先級較低的運算推送回去
-				for(int i = 0; i < qsize; i++){
-					answer += string(" ") + opers[current_level].top();
-					opers[current_level].pop();
-				}
-			}
-			opers[current_level].push(current_oper);
-
-			if(laycount_fall) laycount--;
-			previous_level = current_level;
-
-			cout << "current_level=" << current_level << ", oper=" << current_oper << "\t, laycount=" << laycount << ", " << answer << endl;
-		}
-
-		int remain_lay = level + (laycount+laycount_fall*lay_full_count)*2;
-		for(int l = remain_lay; l >= 0; l--){
-			int qsize = opers[l].size(); // 將優先級較低的運算推送回去
-			for(int i = 0; i < qsize; i++){
-				answer += string(" ") + opers[l].top();
-				opers[l].pop();
-			}
-		}
+		answer = trans_to_postfix(str);
 
 		std::cout << answer << endl;
 	}
 }
+
+/*
+w - ( h - j ) * k
+w h j - k * -
+w h j - - k *
+*/

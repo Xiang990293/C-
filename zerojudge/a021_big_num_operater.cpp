@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <bitset>
+#include <sstream>
+#include <algorithm>
 using namespace std;
 
 const int MAXSIZE = 500;
@@ -361,155 +363,211 @@ int divid(int a[], int b[]){
 	return 0;
 }
 
-int main(){
-	string A="";
-	char op='0';
-	string B="";
+string calculator(string A, string B, char op){
+	bool AgreaterB = A.length() > B.length();
+	stringstream a, b;
+	char f, g;
+	reverse(A.begin(), A.end());
+	reverse(B.begin(), B.end());
+	a << A;
+	b << B;
+	string result = "";
+	bool carry = 0;
+	int temp;
 
-	while(cin >> A >> B){
-		//string > number of binary
-		for(int i=0; i<A.length(); i++) A1[BITSIZE-i] = A[A.length()-1-i]-48;
-		for(int i=0; i<B.length(); i++) B1[MAXSIZE-i] = B[B.length()-1-i]-48;
-		cout << a << " " << b << endl;
-		bitset<BITSIZE> A_bit(a);
-		cout << "terminated?" << endl;
-		bitset<BITSIZE> B_bit(b);
-		cout << A_bit << " " << B_bit << endl;
-	}
-	
-	/*
-	while(cin>>A>>op>>B){
-		
-		int A1[MAXSIZE+1]={};
-		int B1[MAXSIZE+1]={};
-		A1[0]=1;
-		B1[0]=1;
-		
-		//operating
-		if(op != '/'){
-			operate(A1, B1, op);
-			coutArray(Sum);
-		}else{
-			if(compare(A1, B1)==1){
-				int ten[MAXSIZE+1]={};
-				NumtoArr(10);
-				for(int i=0; i<MAXSIZE+1; i++){
-					ten[i] = Num[i];
-				}
-				
-				int bei_qu[MAXSIZE+1]={};
-				for(int i=0; i<MAXSIZE+1; i++){
-					bei_qu[i] = A1[i];
-				}
-				//return after minus
-				int reinput1[MAXSIZE+1]={};
-				for(int i=0; i<MAXSIZE+1; i++){
-					reinput1[i] = A1[i];
-				}
-				
-				int qu[MAXSIZE+1]={};
-				for(int i=0; i<MAXSIZE+1; i++){
-					qu[i] = B1[i];
-				}
-				
-				int shan[MAXSIZE+1]={};
-				NumtoArr(0);
-				for(int i=0; i<MAXSIZE+1; i++){
-					shan[i] = Num[i];
-				}
-				
-				int reinput2[MAXSIZE+1]={};
-				
-				int bei_shu[MAXSIZE+1]={};
-				
-				int d_bei_shu[MAXSIZE+1]={};
-				
-				int power_of_ten[MAXSIZE+1]={};
-				
-				int minus1[MAXSIZE+1]={};
-				
-				int minus2[MAXSIZE+1]={};
-				
-				int sizeMinus = getSize(A1)-getSize(B1);
-				for(int i=0; i<sizeMinus+1; i++){
-					
-					NumtoArr(10);
-					operate(Num, sizeMinus-i, '^');
-					for(int k=0; k<MAXSIZE+1; k++){
-						power_of_ten[k] = Sum1[k];
-					}
-					
-					for(int j=1; j<10;j++){
-						//
-						NumtoArr(j);
-						operate(Num, B1, '*');
-						for(int k=0; k<MAXSIZE+1; k++){
-							bei_shu[k] = Sum[k];
-						}
-						
-						NumtoArr(j-1);
-						operate(Num, B1, '*');
-						for(int k=0; k<MAXSIZE+1; k++){
-							d_bei_shu[k] = Sum[k];
-						}
-						
-						operate(power_of_ten, bei_shu, '*');
-						for(int k=0; k<MAXSIZE+1; k++){
-							minus1[k] = Sum[k];
-						}
-						
-						operate(power_of_ten, d_bei_shu, '*');
-						for(int k=0; k<MAXSIZE+1; k++){
-							minus2[k] = Sum[k];
-						}
-						
-						if(compare(reinput1, minus1)==-1){
-							
-							NumtoArr(j-1);
-							operate(power_of_ten, Num, '*');
-							for(int k=0; k<MAXSIZE+1; k++){
-								reinput2[k] = Sum[k];
-							}
-							
-							operate(shan, reinput2, '+');
-							for(int k=0; k<MAXSIZE+1; k++){
-								shan[k] = Sum[k];
-							}
-							
-							operate(reinput1, minus2, '-');
-							for(int k=0; k<MAXSIZE+1; k++){
-								reinput1[k] = Sum[k];
-							}
-							break;
-						}else if(compare(reinput1, minus1)==0){
-							
-							NumtoArr(j);
-							operate(power_of_ten, Num, '*');
-							for(int k=0; k<MAXSIZE+1; k++){
-								reinput2[k] = Sum[k];
-							}
-							operate(shan, reinput2, '+');
-							for(int k=0; k<MAXSIZE+1; k++){
-								shan[k] = Sum[k];
-							}
-							
-							operate(reinput1, minus1, '-');
-							for(int k=0; k<MAXSIZE+1; k++){
-								reinput1[k] = Sum[k];
-							}
-							break;
-						}
-					}
-				}
-				coutArray(shan);
-			}else if(compare(A1, B1)==0){
-				cout << 1 << endl;
-			}else if(compare(A1, B1)==-1){
-				cout << 0 << endl;
+	switch(op){
+		case '+':
+			for(int i = 0; i < ((AgreaterB)? A.length() : B.length()); i++){
+				a >> f;
+				b >> g;
+				if(a.fail()) f='0';
+				else if(b.fail()) g='0';
+				temp = (int(f) + int(g) - 96 + carry);
+				carry = 0;
+				if (temp >= 10) carry = 1;
+				result += ((temp>=10)?char(temp-10 + 48):char(temp + 48));
 			}
-		}
-	}*/
+			if(carry) result += '1';
+			break;
+		case '-':
+			for(int i = 0; i < ((AgreaterB)? A.length() : B.length()); i++){
+				a >> f;
+				b >> g;
+				if(a.fail()) f='0';
+				else if(b.fail()) g='0';
+				temp = (int(f) - int(g) + (int(f) < int(g)) * 10 - carry);
+				carry = (int(f) < int(g));
+				result += ((temp==0)?"":""+char(temp + 48));
+			}
+			if(result == "") result = "0";
+			break;
+	}
+
+	reverse(result.begin(), result.end());
+
+	return result;
 }
+
+int main(){
+	string A = "", B = "";
+	char op=0;
+
+	while(cin >> A >> op >> B){
+		cout << calculator(A, B, op) << endl;
+	}
+}
+
+// int main(){
+// 	string A="";
+// 	char op='0';
+// 	string B="";
+
+// 	while(cin >> A >> B){
+// 		//string > number of binary
+// 		for(int i=0; i<A.length(); i++) A1[BITSIZE-i] = A[A.length()-1-i]-48;
+// 		for(int i=0; i<B.length(); i++) B1[MAXSIZE-i] = B[B.length()-1-i]-48;
+// 		cout << a << " " << b << endl;
+// 		bitset<BITSIZE> A_bit(a);
+// 		cout << "terminated?" << endl;
+// 		bitset<BITSIZE> B_bit(b);
+// 		cout << A_bit << " " << B_bit << endl;
+// 	}
+	
+// 	/*
+// 	while(cin>>A>>op>>B){
+		
+// 		int A1[MAXSIZE+1]={};
+// 		int B1[MAXSIZE+1]={};
+// 		A1[0]=1;
+// 		B1[0]=1;
+		
+// 		//operating
+// 		if(op != '/'){
+// 			operate(A1, B1, op);
+// 			coutArray(Sum);
+// 		}else{
+// 			if(compare(A1, B1)==1){
+// 				int ten[MAXSIZE+1]={};
+// 				NumtoArr(10);
+// 				for(int i=0; i<MAXSIZE+1; i++){
+// 					ten[i] = Num[i];
+// 				}
+				
+// 				int bei_qu[MAXSIZE+1]={};
+// 				for(int i=0; i<MAXSIZE+1; i++){
+// 					bei_qu[i] = A1[i];
+// 				}
+// 				//return after minus
+// 				int reinput1[MAXSIZE+1]={};
+// 				for(int i=0; i<MAXSIZE+1; i++){
+// 					reinput1[i] = A1[i];
+// 				}
+				
+// 				int qu[MAXSIZE+1]={};
+// 				for(int i=0; i<MAXSIZE+1; i++){
+// 					qu[i] = B1[i];
+// 				}
+				
+// 				int shan[MAXSIZE+1]={};
+// 				NumtoArr(0);
+// 				for(int i=0; i<MAXSIZE+1; i++){
+// 					shan[i] = Num[i];
+// 				}
+				
+// 				int reinput2[MAXSIZE+1]={};
+				
+// 				int bei_shu[MAXSIZE+1]={};
+				
+// 				int d_bei_shu[MAXSIZE+1]={};
+				
+// 				int power_of_ten[MAXSIZE+1]={};
+				
+// 				int minus1[MAXSIZE+1]={};
+				
+// 				int minus2[MAXSIZE+1]={};
+				
+// 				int sizeMinus = getSize(A1)-getSize(B1);
+// 				for(int i=0; i<sizeMinus+1; i++){
+					
+// 					NumtoArr(10);
+// 					operate(Num, sizeMinus-i, '^');
+// 					for(int k=0; k<MAXSIZE+1; k++){
+// 						power_of_ten[k] = Sum1[k];
+// 					}
+					
+// 					for(int j=1; j<10;j++){
+// 						//
+// 						NumtoArr(j);
+// 						operate(Num, B1, '*');
+// 						for(int k=0; k<MAXSIZE+1; k++){
+// 							bei_shu[k] = Sum[k];
+// 						}
+						
+// 						NumtoArr(j-1);
+// 						operate(Num, B1, '*');
+// 						for(int k=0; k<MAXSIZE+1; k++){
+// 							d_bei_shu[k] = Sum[k];
+// 						}
+						
+// 						operate(power_of_ten, bei_shu, '*');
+// 						for(int k=0; k<MAXSIZE+1; k++){
+// 							minus1[k] = Sum[k];
+// 						}
+						
+// 						operate(power_of_ten, d_bei_shu, '*');
+// 						for(int k=0; k<MAXSIZE+1; k++){
+// 							minus2[k] = Sum[k];
+// 						}
+						
+// 						if(compare(reinput1, minus1)==-1){
+							
+// 							NumtoArr(j-1);
+// 							operate(power_of_ten, Num, '*');
+// 							for(int k=0; k<MAXSIZE+1; k++){
+// 								reinput2[k] = Sum[k];
+// 							}
+							
+// 							operate(shan, reinput2, '+');
+// 							for(int k=0; k<MAXSIZE+1; k++){
+// 								shan[k] = Sum[k];
+// 							}
+							
+// 							operate(reinput1, minus2, '-');
+// 							for(int k=0; k<MAXSIZE+1; k++){
+// 								reinput1[k] = Sum[k];
+// 							}
+// 							break;
+// 						}else if(compare(reinput1, minus1)==0){
+							
+// 							NumtoArr(j);
+// 							operate(power_of_ten, Num, '*');
+// 							for(int k=0; k<MAXSIZE+1; k++){
+// 								reinput2[k] = Sum[k];
+// 							}
+// 							operate(shan, reinput2, '+');
+// 							for(int k=0; k<MAXSIZE+1; k++){
+// 								shan[k] = Sum[k];
+// 							}
+							
+// 							operate(reinput1, minus1, '-');
+// 							for(int k=0; k<MAXSIZE+1; k++){
+// 								reinput1[k] = Sum[k];
+// 							}
+// 							break;
+// 						}
+// 					}
+// 				}
+// 				coutArray(shan);
+// 			}else if(compare(A1, B1)==0){
+// 				cout << 1 << endl;
+// 			}else if(compare(A1, B1)==-1){
+// 				cout << 0 << endl;
+// 			}
+// 		}
+// 	}*/
+// }
+
+
 /*tool kit
 
 for(int i=0; i<MAXSIZE+1; i++){
