@@ -1,15 +1,9 @@
 #include <iostream>
 #include <string>
-#include <string>
 #include <locale>
 #include <codecvt>
 #include <fstream>
 #include <bitset>
-// #include <string.h>
-// #include <ctime>
-// #include <stdio.h>
-// #include <cstdlib>
-// #include <math.h>
 
 std::string map_to_utf8(const int val) {
     std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> converter;

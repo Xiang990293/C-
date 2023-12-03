@@ -141,6 +141,10 @@ int main(){
 			}
 		}
 		Output.close();
+
+		// 用python輔助繪圖
+		system("pip install matplotlib");
+		system("py plot.py");
 	}
 	
 	return 0;
