@@ -34,18 +34,10 @@ int main()
 	// a += "";
 	// cout << (a == "") << endl;
 
-	int a = 0;
-	while(cin >> a){
-		cout << ", dec=" << a;
-		string nov;
-		int dec = a;
-		while(dec != 0){
-			nov += char(dec%9+48);
-			dec /= 9;
-		}
-		if(dec==0) nov = "0";
-		reverse(nov.begin(),nov.end());
-		cout << ", nov=" << nov << endl;
-		for(int i = 0;;) ;
+	int a, b;
+	while(cin >> a >> b){
+		cout << a << endl;
+		a <<= b;
+		cout << a << endl;
 	}
 }

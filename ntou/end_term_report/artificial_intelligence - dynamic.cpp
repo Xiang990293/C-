@@ -7,108 +7,108 @@
 #include <cmath>
 using namespace std;
 
-// #define BYTE unsigned char
-// #define WORD unsigned short
-// #define DWORD unsigned int
+#define BYTE unsigned char
+#define WORD unsigned short
+#define DWORD unsigned int
 
-// #pragma pack(push)
-// #pragma pack(2)
-// struct BITMAPFILEHEADER{
-// 	WORD bfType;
-// 	DWORD bfSize;
-// 	WORD bfReserved1;
-// 	WORD bfReserved2;
-// 	DWORD bfOffBits;
-// };
-// #pragma pack(pop)
+#pragma pack(push)
+#pragma pack(2)
+struct BITMAPFILEHEADER{
+	WORD bfType;
+	DWORD bfSize;
+	WORD bfReserved1;
+	WORD bfReserved2;
+	DWORD bfOffBits;
+};
+#pragma pack(pop)
 
-// struct BITMAPINFOHEADER{
-// 	DWORD biSize;
-// 	int biWidth;
-// 	int biHeight;
-// 	WORD biPlanes;
-// 	WORD biBitCount;
-// 	DWORD biCompression;
-// 	DWORD biSizeImage;
-// 	int biXPelsPerMeter;
-// 	int biYPelsPerMeter;
-// 	DWORD biClrUsed;
-// 	DWORD biClrImportant;
-// };
+struct BITMAPINFOHEADER{
+	DWORD biSize;
+	int biWidth;
+	int biHeight;
+	WORD biPlanes;
+	WORD biBitCount;
+	DWORD biCompression;
+	DWORD biSizeImage;
+	int biXPelsPerMeter;
+	int biYPelsPerMeter;
+	DWORD biClrUsed;
+	DWORD biClrImportant;
+};
 
-// class ImageMatrix{
-// public:
-// 	int height;
-// 	int width;
-// 	int rowsize;
-// 	BYTE* term;
+class ImageMatrix{
+public:
+	int height;
+	int width;
+	int rowsize;
+	BYTE* term;
 
-// 	ImageMatrix(){
-// 		height = 0;
-// 		width=0;
-// 	}
+	ImageMatrix(){
+		height = 0;
+		width=0;
+	}
 
-// 	ImageMatrix(int height, int width){
-// 		this->height=height;
-// 		this->width=width;
-// 		rowsize = (3*width+3)/4*4;
-// 		term = new BYTE[height*rowsize];
-// 	}
+	ImageMatrix(int height, int width){
+		this->height=height;
+		this->width=width;
+		rowsize = (3*width+3)/4*4;
+		term = new BYTE[height*rowsize];
+	}
 
-// 	bool Load(char* filename){
-// 		BITMAPFILEHEADER h;
-// 		BITMAPINFOHEADER hInfo;
-// 		ifstream f;
-// 		f.open(filename, ios::binary);
-// 		f.read((char*)&h, sizeof(h));
-// 		f.read((char*)&hInfo, sizeof(hInfo));
-// 		if(h.bfType != 0x4d42
-// 		|| hInfo.biClrUsed != 0
-// 		|| hInfo.biBitCount != 24
-// 		|| hInfo.biCompression != 0
-// 		|| hInfo.biPlanes != 1){
-// 			f.close();
-// 			return 0;
-// 		}
+	bool Load(char* filename){
+		BITMAPFILEHEADER h;
+		BITMAPINFOHEADER hInfo;
+		ifstream f;
+		f.open(filename, ios::binary);
+		f.read((char*)&h, sizeof(h));
+		f.read((char*)&hInfo, sizeof(hInfo));
+		if(h.bfType != 0x4d42
+		|| hInfo.biClrUsed != 0
+		|| hInfo.biBitCount != 24
+		|| hInfo.biCompression != 0
+		|| hInfo.biPlanes != 1){
+			f.close();
+			return 0;
+		}
 
-// 		width = hInfo.biWidth;
-// 		height = hInfo.biHeight;
-// 		*this = ImageMatrix(height, width);
-// 		f.read((char*)term, height*rowsize);
-// 		f.close();
-// 		return 1;
-// 	}
+		width = hInfo.biWidth;
+		height = hInfo.biHeight;
+		*this = ImageMatrix(height, width);
+		f.read((char*)term, height*rowsize);
+		f.close();
+		return 1;
+	}
 
-// 	bool Save(char* filename){
-// 		BITMAPFILEHEADER h = {
-// 			0x4d42,
-// 			54+ rowsize*height,
-// 			0,
-// 			0,
-// 			54
-// 		};
-// 		BITMAPINFOHEADER hInfo = {
-// 			40,
-// 			width,
-// 			height,
-// 			1,
-// 			21,
-// 			0,
-// 			rowsize*height,
-// 			3780,
-// 			3780,
-// 			0,
-// 			0
-// 		};
-// 		ofstream f;
-// 		f.open(filename, ios::binary);
-// 		f.write((char*)&h, sizeof(h));
-// 		f.write((char*)&hInfo, sizeof(hInfo));
-// 		f.write((char*)term, rowsize*height);
-// 		f.close();
-// 		return 1;
-// 	}
-// };
+	bool Save(char* filename){
+		BITMAPFILEHEADER h = {
+			0x4d42,
+			54+ rowsize*height,
+			0,
+			0,
+			54
+		};
+		BITMAPINFOHEADER hInfo = {
+			40,
+			width,
+			height,
+			1,
+			21,
+			0,
+			rowsize*height,
+			3780,
+			3780,
+			0,
+			0
+		};
+		ofstream f;
+		f.open(filename, ios::binary);
+		f.write((char*)&h, sizeof(h));
+		f.write((char*)&hInfo, sizeof(hInfo));
+		f.write((char*)term, rowsize*height);
+		f.close();
+		return 1;
+	}
+};
 
 long double input_to_hidden_sigmoid_function(long double input){
 	return (2/((1+exp(-2*(input))))-1);
@@ -245,7 +245,14 @@ int main(){
 				Output << hidden_to_output_unnormalize_function(sum, Output_range[nodes][0], Output_range[nodes][1]) << endl;
 			}
 		}
+		Output.close();
 		
+		ifstream Output("ANNSFM_outputs.txt"); // 輸出之資料
+		if(Output.is_open()){
+		}
+
+		Output.close();
+
 		
 	}
 	
