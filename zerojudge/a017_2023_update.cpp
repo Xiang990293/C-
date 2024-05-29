@@ -97,6 +97,63 @@ const char symble[] = {'(',')'};
 // 	return iformula;
 // }
 
+struct Operand{
+	string operand;
+
+	Operand(string a){
+		operand = a;
+	}
+
+	Operand(){
+		operand = "0";
+	}
+};
+
+struct Operator{
+	char operators;
+
+	Operator(char op){
+		switch(op){
+			case '+':{
+				operators = '+';
+				break;
+			}
+			case '-':{
+				operators = '-';
+				break;
+			}
+			case '*':{
+				operators = '*';
+				break;
+			}
+			case '/':{
+				operators = '/';
+				break;
+			}
+			case '%':{
+				operators = '%';
+				break;
+			}
+			default:{ // if formula got wrong
+				operators = '+';
+				break;
+			}
+		}
+	}
+};
+
+struct formula{
+	Operand a;
+	Operand b;
+	Operator op;
+
+	formula(Operand a1, Operand b1, Operator op1){
+		a = a1;
+		b = b1;
+		op = op1;
+	}
+};
+
 int main(){
 	stringstream s;
 	string strResult;

@@ -13,31 +13,8 @@ using namespace std;
 
 int main()
 {
-	// stringstream s;
-	// string str;
-	// while(getline(cin, str)){
-	// 	s.str("");
-	// 	s.clear();
-	// 	s << str;
-	// 	while(true){
-	// 		s >> str;
-	// 		if(s.fail()) break;
-	// 		cout << str << endl;
-	// 	}
-	// }
-
-	// string a = "";
-	// cout << (a == "") << endl;
-	// a += char(0);
-	// cout << (a == "") << endl;
-	// a = "";
-	// a += "";
-	// cout << (a == "") << endl;
-
-	int a, b;
-	while(cin >> a >> b){
-		cout << a << endl;
-		a <<= b;
-		cout << a << endl;
+	for(int i =0; i< 1000; i++) {
+		if (~i * ~0 != i + 1) cout << "no" << endl;
+		cout << ~i * ~0 << endl;
 	}
 }

@@ -1,6 +1,8 @@
 #specific files
 all_unicode.txt
 測資/*
+*.doc
+*.docx
 .vscode/*
 
 # Prerequisites
