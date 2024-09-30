@@ -4,10 +4,7 @@
             "name": "windows-gcc-x64",
             "includePath": [
                 "${workspaceFolder}/**",
-                "g++",
-                "gcc",
-                "gdb",
-                "C:/msys64/mingw64/include"
+                "E:/APPDATA/Dev-Cpp/MinGW64/include"
             ],
             "compilerPath": "C:/msys64/mingw64/bin/gcc.exe",
             "cStandard": "${default}",

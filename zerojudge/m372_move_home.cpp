@@ -1,4 +1,6 @@
 #include<iostream>
+#include<sstream>
+#include<stack>
 using namespace std;
 
 struct node{
@@ -25,6 +27,14 @@ struct node{
 		right = 0;
 		up = 0;
 		down = 0;
+	}
+
+	string get_xy(){
+		stringstream result;
+		string returning;
+		result << x << " " << y;
+		getline(result, returning);
+		return returning;
 	}
 };
 
@@ -57,19 +67,42 @@ node to_node(int x, int y, char a){
 
 }
 
+bool connect_check(node* a, node* b){
+	if ((abs(a->x - b->x) + abs(a->y - b->y)) == 1) return false; // check the distance (Manhattan distance)
+	if (a->x == b->x) return (a->left&&b->right)||(a->right&&b->left);
+	if (a->y == b->y) return (a->up&&b->down)||(a->down&&b->up);
+}
+
+bool node_check(node* a){
+	return a->x >= 0;
+}
+
 int main(){
 	int row, column;
-	cin >> row >> column;
-	char temp;
-	node map[row][column];
-	for(int i = 0; i < row; i++)
-		for(int j = 0; j < column; j++){
-			cin >> temp;
-			map[i][j] = to_node(i, j, temp);
+	while(cin >> row >> column){
+		char temp;
+		node map[row][column];
+		for(int i = 0; i < row; i++)
+			for(int j = 0; j < column; j++){
+				cin >> temp;
+				map[i][j] = to_node(i, j, temp);
+			}
+		
+		node* current = &map[0][0];
+		int max = 0;
+		while(current->x + current->y < row+column-2){
+			bool out = false;
+			for(int i = 0; i < row || out; i++)
+				for(int j = 0; j < column || out; j++){
+					if (node_check(&map[i][j])) {
+						current = &map[i][j];
+						out = true;
+					}
+				}
+			
+			;
 		}
-	
-	for(int i = 0; i < row; i++)
-		for(int j = 0; j < column; j++){
-			cout << &(map[i][j]) << endl;
-		}
+
+		std::cout << max << endl;
+	}
 }

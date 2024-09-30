@@ -1,11 +1,12 @@
 #include<iostream>
 #include"binary_tree_node.cpp"
 #include"stack.cpp"
+#include<sstream>
 using namespace std;
 
 template <typename T>
 struct binary_tree{
-	binary_tree_node* start;
+	binary_tree_node<T>* start;
 	int length = 0;
 
 	binary_tree() {
@@ -62,9 +63,9 @@ struct binary_tree{
 		cout << endl;
 	}
 
-	void print_L2R(){
+	string print_L2R(){
 		binary_tree_node<T>* ptr = start;
-		stack have_child = stack();
+		stack have_child = stack<T>();
 		if(ptr->left != nullptr){
 			have_child.push(ptr)
 		}
