@@ -1,8 +1,8 @@
 #include<iostream>
 #include<math.h>
 using namespace std;
-
-/*void print_all(int clockwise, int msize, int** result){
+/*
+void print_all(int clockwise, int msize, int** result){
     cout << endl;
     switch(clockwise){
             case 1:{
@@ -27,7 +27,25 @@ using namespace std;
 		}
 
     return;
-}*/
+} // print_all(clockwise, msize, result)*/
+
+int* rot_90(int* value) {
+    // a + bi => b - ai
+    int temp = value[0];
+    value[0] = value[1];
+    value[1] = temp;
+
+    value[1] *= -1;
+
+    return value;
+}
+
+int* move_current(int* current, int* dir){
+    current[0] += dir[0];
+    current[1] += dir[1];
+
+    return current;
+} // move_current(current, dir);
 
 int main(){
 	int total, msize;
@@ -41,43 +59,36 @@ int main(){
 		int** result = new int*[msize];
 		for (int i = 0; i<msize; i++){
             result[i] = new int[msize];
-            for(int j=0; j<msize; j++){
+            for(int j = 0; j<msize; j++){
                 result[i][j] = 0;
             }
 		} // print_all(clockwise, msize, result)
 		//int result[msize][msize] = {};
 
-		// center n^2
-		if (msize % 2 == 0) result[msize/2][msize/2-1] = msize * msize;
-		else result[msize/2][msize/2] = msize * msize;
+		int counter = 1;
+		int* current = new int[2];
+		current[0] = 0; current[1] = 0;
 
-		int row, column;
-        row = column = (msize % 2 == 0) ? msize/2-1 : msize/2;
-		// find the value of main diagonal
-		result[row][column] = (msize % 2 == 0)? msize * msize - 3 : msize * msize;
-		for(int i = (msize % 2 == 0) ? 3 : 2;i<msize;i+=2) {
-            result[--row][--column] = result[row][column] - 4 * i;
-		}
-		row = column = (msize % 2 == 0) ? msize/2 : msize/2+1;
-		for(int i = (msize % 2 == 0) ? 1 : 2;i<msize;i+=2) {
-            result[row++][column++] = result[msize-row-1][msize-column-1] + 2 * i;
-		}
+		int* dir = new int[2];
+		dir[0] = 0; dir[1] = 1;
 
-		for(int i = 1;i < msize; i++){ // left/right triangle
-            if (i<=msize/2) result[i][i-1] = result[i][i] - 1;
-            else result[i-1][i] = result[i][i] - 1;
-            for(int j = (i<msize/2) ? i+1 : i-1; (i<msize/2)? j < msize - i : j > msize - i - 1; (i<msize/2)?j++:j--){
-                if (i<msize/2) result[j][i-1] = result[j-1][i-1] - 1;
-                else result[j][i] = result[j+1][i] - 1;
+		for (;counter <= msize;counter++) {
+            result[current[0]][current[1]] = counter;
+            if (counter < msize) current = move_current(current, dir);
+		}
+		dir = rot_90(dir);
+		for (int i = msize - 1; counter<= msize * msize; i--) {
+            for (int j = 0; j < i; j++) {
+                move_current(current, dir);
+                result[current[0]][current[1]] = counter++;
             }
-		}
-		for(int i = 0;i < msize; i++){ // middle sand-clock
-            for(int j = (i<msize/2)? i+1 : i-1; (i<msize/2)? (j < msize - i): (j > msize - i - 2); (i<msize/2)?j++:j--){
-                if (i<msize/2) result[i][j] = result[i][j-1] + 1;
-                else result[i][j] = result[i][j+1] + 1;
+            dir = rot_90(dir);
+            for (int j = 0; j < i; j++) {
+                move_current(current, dir);
+                result[current[0]][current[1]] = counter++;
             }
+            dir = rot_90(dir);
 		}
-
 
 		switch(clockwise){
             case 1:{
