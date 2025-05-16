@@ -1,5 +1,6 @@
 #include<iostream>
 #include <cstdio>
+#pragma GCC optimize("Ofast")//O3加上一些快速但不安全的數學運算
 using namespace std;
 
 struct node{
@@ -34,9 +35,11 @@ struct linked_queue {
 
     linked_queue(int len) {
         head = new node[len];
+
         for (int i = 0; i < len-1; i++) {
             head[i].next = &head[i+1];
             head[i].code = i+1;
+
         }
         head[len-1].code = len;
 
@@ -58,8 +61,9 @@ struct linked_queue {
     }
 
     int pop_node(int code) {
+        if (length == 0) return -1;
 
-        node* target = head;
+        node* target = &head[code-1];
         while (target->code != code) {
 
             if (target->code > code) {
@@ -68,16 +72,26 @@ struct linked_queue {
             if (target->next == nullptr) {
                 return -1;
             }
-            target = target->next;
+
+            /*if (target->code > )
+            else*/
+                target = target->next;
         }
+
         if (target->next == nullptr) {
             return -1;
         }
 
         int result = target->next->code;
 
+        target->next->code = -1;
         target->next = target->next->next;
         length--;
+
+        while (head[code-2].code == -1) {
+            head[code-1] = &head[code-2];
+            head
+        }
 
         return result;
     }
