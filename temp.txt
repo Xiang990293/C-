@@ -1,0 +1,10 @@
+sudo mount /dev/nvme0n1p2 /mnt
+sudo mount /dev/nvme0n1p1 /mnt/boot/efi
+for i in /dev /dev/pts /proc /sys /run; do sudo mount --bind $i /mnt$i; done
+sudo chroot /mnt
+
+
+exit
+for i in /run /dev/pts /dev /proc /sys; do sudo umount /mnt$i; done
+sudo umount /mnt/boot/efi
+sudo umount /mnt
