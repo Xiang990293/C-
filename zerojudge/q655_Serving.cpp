@@ -16,24 +16,26 @@ void helper(vector<int> &a, int left, int right, vector<int> &temp) {
         temp[left] = a[left];
         return;
     }
-    
-    helper(a, left, (left + right) / 2, temp);
-    helper(a, (left + right) / 2 + 1, right, temp);
 
-    int pl = (left + right) / 2;
-    int pr = right;
-    int pt = pr;
-    while (pl >= left && pr >= (left + right) / 2 + 1) {
-        if (temp[pl] > temp[pr]) {
-            a[pt--] = temp[pl--];
-            inverted_pair += (long long)pr - (long long)(left + right) / 2;
+    int mid = (left + right) / 2;
+    
+    helper(a, left, mid, temp);
+    helper(a, mid + 1, right, temp);
+
+    int pl = left;
+    int pr = mid + 1;
+    int pt = left;
+    while (pl <= mid && pr <= right) {
+        if (temp[pl] <= temp[pr]) {
+            a[pt++] = temp[pl++];
         } else {
-            a[pt--] = temp[pr--];
+            a[pt++] = temp[pr++];
+            inverted_pair += (long long)mid - (long long)pl + 1;
         }
     }
 
-    while (pl >= left) a[pt--] = temp[pl--];
-    while (pr >= (left + right) / 2 + 1) a[pt--] = temp[pr--];
+    while (pl <= mid) a[pt++] = temp[pl++];
+    while (pr <= right) a[pt++] = temp[pr++];
 
     for (int i = left; i <= right; i++) {
         temp[i] = a[i];
