@@ -45,9 +45,12 @@ void helper(vector<int> &a, int left, int right, vector<int> &temp) {
 }
 
 int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
     int n;
     cin >> n;
-    queue<int> dish[n];
+    vector<queue<int>> dish(n);
     vector<int> eigen(n, 0);
     vector<int> temp(n, 0);
 
