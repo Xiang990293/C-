@@ -6,52 +6,55 @@
 #include <queue>
 using namespace std;
 
-vector<int> helper(vector<int> &a, int left, int right, int &inverted_pair) {
-    // left, right: the number count by left, start from 1,
-    // notice that we need to - 1 before indexing arraies.
-    
-    if (left == right) return vector<int>(1, a[left-1]);
-    
-    vector<int> vl = helper(a, left, (left + right) / 2, inverted_pair);
-    vector<int> vr = helper(a, (left + right) / 2 + 1, right, inverted_pair);
+long long inverted_pair = 0;
 
-    int pl = vl.size(), pr = vr.size();
-    vector<int> vt(pl + pr, 0);
-    int pt = vt.size();
-    while (pl > 0 && pr > 0) {
-        if (vl[pl - 1] > vr[pr - 1]) {
-            vt[--pt] = vl[--pl];
-            inverted_pair += pr;
+void helper(vector<int> &a, int left, int right, vector<int> &temp) {
+    // a: the array of data we want to find the inverted pair.
+    // left, right: the index, 0 to (n-1).
+    
+    if (left == right) {
+        temp[left] = a[left];
+        return;
+    }
+    
+    helper(a, left, (left + right) / 2, temp);
+    helper(a, (left + right) / 2 + 1, right, temp);
+
+    int pl = (left + right) / 2;
+    int pr = right;
+    int pt = pr;
+    while (pl >= left && pr >= (left + right) / 2 + 1) {
+        if (temp[pl] > temp[pr]) {
+            a[pt--] = temp[pl--];
+            inverted_pair += (long long)pr - (long long)(left + right) / 2;
         } else {
-            vt[--pt] = vr[--pr];
+            a[pt--] = temp[pr--];
         }
     }
 
-    if (pl > 0) while (pl > 0) vt[--pt] = vl[--pl];
-    if (pr > 0) while (pr > 0) vt[--pt] = vr[--pr];
+    while (pl >= left) a[pt--] = temp[pl--];
+    while (pr >= (left + right) / 2 + 1) a[pt--] = temp[pr--];
 
-    return vt;
-}
+    for (int i = left; i <= right; i++) {
+        temp[i] = a[i];
+    }
 
-int reverted_pair(vector<int> &a) {
-    int result = 0;
-    helper(a, 1, a.size(), result);
-
-    return result;
+    return;
 }
 
 int main() {
     int n;
     cin >> n;
-    queue<int> dish[n+1];
-    vector<int> eigen;
-    
+    queue<int> dish[n];
+    vector<int> eigen(n, 0);
+    vector<int> temp(n, 0);
+
     int c,d;
-    for (int i = 1; i <= n; i++) {
+    for (int i = 0; i < n; i++) {
         cin >> c >> d;
 
-        dish[d].push(i);
-        eigen.push_back(c);
+        dish[d-1].push(i);
+        eigen[i] = c-1;
     }
 
     int k;
@@ -61,5 +64,8 @@ int main() {
         j = k;
     }
     
-    cout << reverted_pair(eigen) << endl;
+    helper(eigen, 0, n-1, temp);
+    cout << inverted_pair << endl;
+
+    return 0;
 }
