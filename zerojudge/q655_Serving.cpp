@@ -50,22 +50,22 @@ int main() {
 
     int n;
     cin >> n;
-    vector<queue<int>> dish(n);
+    vector<vector<int>> dish(n);
     vector<int> eigen(n, 0);
     vector<int> temp(n, 0);
+    vector<int> ctr(n, 0);
 
     int c,d;
     for (int i = 0; i < n; i++) {
         cin >> c >> d;
 
-        dish[d-1].push(i);
+        dish[d-1].push_back(i);
         eigen[i] = c-1;
     }
 
     int k;
     for (int &j : eigen) {
-        k = dish[j].front();
-        dish[j].pop();
+        k = dish[j][ctr[j]++];
         j = k;
     }
     
