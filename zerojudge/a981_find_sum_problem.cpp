@@ -1,23 +1,58 @@
 #include<iostream>
+#include<vector>
+#include<unordered_map>
 using namespace std;
 
-int parse_goal(int* arr, int goal)
+int subarraySum(vector<int>& nums, int k) {
+	vector<int> prefix_sum = {0};
+
+	int sum = 0;
+	int counter = 0;
+	unordered_map<int, int> prefix_counts;
+	prefix_counts[0] = 1;
+	for (int &i : nums) {
+		sum += i;
+
+		if (prefix_counts.find(sum - k) != prefix_counts.end()) counter+=prefix_counts[sum-k];
+
+		prefix_sum.push_back(sum);
+		prefix_counts[sum]++;
+	}
+
+	return counter;
+}
 
 int main(){
 	int num_of_num;
 	int goal;
 	int nums[30];
-	while (cin >> num_of_num >> goal){
-		for(int _=0; _<num_of_num; _++){
-			cin >> nums[_];
-		}
-		
-		for(int i=0; i<num_of_num; i++)
-			for(int j=i+1; j<num_of_num; j++){
-			
-				
-		}
-	}
+	
+	
 	
 	return 0;
 }
+
+// similar to leetcode 560
+// BUT DIFFERENT!!!
+
+// class Solution {
+// public:
+//     int subarraySum(vector<int>& nums, int k) {
+//         vector<int> prefix_sum = {0};
+
+//         int sum = 0;
+//         int counter = 0;
+//         std::unordered_map<int, int> prefix_counts;
+//         prefix_counts[0] = 1;
+//         for (int &i : nums) {
+//             sum += i;
+
+//             if (prefix_counts.find(sum - k) != prefix_counts.end()) counter+=prefix_counts[sum-k];
+
+//             prefix_sum.push_back(sum);
+//             prefix_counts[sum]++;
+//         }
+
+//         return counter;
+//     }
+// };
