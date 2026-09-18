@@ -5,35 +5,57 @@
 #include<string>
 using namespace std;
 
-inline void writeStr(const string& s) {
-    for (char c : s) {
-        putchar_unlocked(c);
+inline void writeInt(int x) {
+    if (x < 0) {
+        putchar_unlocked('-');
+        x = -x;
+    }
+    if (x == 0) {
+        putchar_unlocked('0');
+        return;
+    }
+    char buf[20];
+    int idx = 0;
+    while (x > 0) {
+        buf[idx++] = (x % 10) + '0';
+        x /= 10;
+    }
+    while (idx--) {
+        putchar_unlocked(buf[idx]);
     }
 }
 
 bool has_sol = false;
 
-void helper(vector<int> &nums, int pos, int sum, string result, int target) {
-	if (sum > target) return;
+bool helper(vector<int> &nums, int pos, int sum, vector<bool> &uses, int target) {
+	if (sum > target) return false;
 	if (sum == target) {
 		has_sol = true;
-		writeStr(result + "\n");
-		return;
+		for (int i = 0; i < pos; i++) {
+			if (!uses[i]) continue;
+			writeInt(nums[i]);
+        	putchar_unlocked(' ');
+		}
+		putchar_unlocked('\n');
+		return true;
 	}
 	if (pos == nums.size()) {
-		return;
+		return true;
 	}
 
-	helper(nums, pos+1, sum+nums[pos], result + to_string(nums[pos]) + " ", target);
-	helper(nums, pos+1, sum, result, target);
+	uses[pos] = true;
+	if (helper(nums, pos+1, sum+nums[pos], uses, target))
+		uses[pos] = false;
+		helper(nums, pos+1, sum, uses, target);
 
-	return;
+	return true;
 }
 
 int main(){
 	int n, tar;
 	scanf("%d %d", &n, &tar);
 	vector<int> nums(n, 0);
+	vector<bool> uses(n, 0);
 
 	for (int i = 0; i < n; i++) {
 		scanf("%d", &nums[i]);
@@ -43,7 +65,7 @@ int main(){
 		return a < b;
 	});
 
-	helper(nums, 0, 0, "", tar);
+	helper(nums, 0, 0, uses, tar);
 
 	if (!has_sol) printf("-1");
 	
