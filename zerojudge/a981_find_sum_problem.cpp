@@ -27,6 +27,7 @@ void helper(vector<int> &nums, int pos, int sum, string result, int target) {
 int main(){
 	ios_base::sync_with_stdio(false);
 	cin.tie(NULL);
+	cout.tie(NULL);
 	
 	int n, tar;
 	cin >> n >> tar;
