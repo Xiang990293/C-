@@ -4,10 +4,14 @@
 #include<algorithm>
 using namespace std;
 
+bool has_sol = false;
+string output = "";
+
 void helper(vector<int> &nums, int pos, int sum, string result, int target) {
 	if (sum > target) return;
 	if (sum == target) {
-		cout << result << endl;
+		has_sol = true;
+		output += result + "\n";
 		return;
 	}
 	if (pos == nums.size()) {
@@ -37,6 +41,9 @@ int main(){
 	});
 
 	helper(nums, 0, 0, "", tar);
+
+	if (!has_sol) cout << -1 << endl;
+	cout << output << endl;
 	
 	return 0;
 }
