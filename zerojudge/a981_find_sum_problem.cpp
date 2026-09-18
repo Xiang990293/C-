@@ -1,17 +1,23 @@
-#include<iostream>
 #include<vector>
 #include<unordered_map>
 #include<algorithm>
+#include<cstdio>
+#include<string>
 using namespace std;
 
+inline void writeStr(const string& s) {
+    for (char c : s) {
+        putchar_unlocked(c);
+    }
+}
+
 bool has_sol = false;
-string output = "";
 
 void helper(vector<int> &nums, int pos, int sum, string result, int target) {
 	if (sum > target) return;
 	if (sum == target) {
 		has_sol = true;
-		output += result + "\n";
+		writeStr(result + "\n");
 		return;
 	}
 	if (pos == nums.size()) {
@@ -25,16 +31,12 @@ void helper(vector<int> &nums, int pos, int sum, string result, int target) {
 }
 
 int main(){
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-	cout.tie(NULL);
-	
 	int n, tar;
-	cin >> n >> tar;
+	scanf("%d %d", &n, &tar);
 	vector<int> nums(n, 0);
 
 	for (int i = 0; i < n; i++) {
-		cin >> nums[i];
+		scanf("%d", &nums[i]);
 	}
 
 	sort(nums.begin(), nums.end(), [](int a, int b) {
@@ -43,8 +45,7 @@ int main(){
 
 	helper(nums, 0, 0, "", tar);
 
-	if (!has_sol) cout << -1 << endl;
-	cout << output << endl;
+	if (!has_sol) printf("-1");
 	
 	return 0;
 }
