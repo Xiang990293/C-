@@ -1,152 +1,136 @@
-#include<iostream>
+#include <iostream>
 #include <cstdio>
-#pragma GCC optimize("Ofast")//O3加上一些快速但不安全的數學運算
+#include <sstream>
+#include <set>
+#include <vector>
+#pragma GCC optimize("Ofast") // O3加上一些快速但不安全的數學運算
 using namespace std;
 
-struct node{
+struct node
+{
 
-    node() {
+    node()
+    {
         next = nullptr;
     }
 
-    node(node* n) {
+    node(node *n)
+    {
         next = n;
     }
 
-    node(int num) {
+    node(int num)
+    {
         next = nullptr;
         code = num;
     }
 
-    node(int num, node* n) {
+    node(int num, node *n)
+    {
         next = n;
         code = num;
     }
 
-    node* next;
+    node *next;
     int code;
 };
 
-struct linked_queue {
-    linked_queue(){
-        head = new node();
+struct linked_list
+{
+
+    vector<node> queue;
+    int length;
+    int max_length;
+    vector<bool> is_killed;
+
+    linked_list()
+    {
+        queue[0] = new node();
         length = 1;
     }
 
-    linked_queue(int len) {
-        head = new node[len];
+    linked_list(int len)
+    {
+        queue = vector<node>(len);
+        is_killed = vector<bool>(len + 1, false);
 
-        for (int i = 0; i < len-1; i++) {
-            head[i].next = &head[i+1];
-            head[i].code = i+1;
-
+        for (int i = 0; i < len - 1; i++)
+        {
+            queue[i].next = &queue[i + 1];
+            queue[i].code = i + 1;
         }
-        head[len-1].code = len;
+        queue[len - 1].code = len;
 
         length = len;
+        max_length = len;
     }
 
-    linked_queue(int len, int* value) {
-        head = new node[len];
-        try {
-            for (int i = 0; i < len; i++) {
-                head[i].next = &head[i+1];
-                head[i].code = value[i];
-            }
-        } catch (...) {
-            errc(address_not_available);
-        }
-
-        length = len;
-    }
-
-    int pop_node(int code) {
-        if (length == 0) return -1;
-
-        node* target = &head[code-1];
-        while (target->code != code) {
-
-            if (target->code > code) {
-                return -1;
-            }
-            if (target->next == nullptr) {
-                return -1;
-            }
-
-            /*if (target->code > )
-            else*/
-                target = target->next;
-        }
-
-        if (target->next == nullptr) {
+    int pop_next_node(int code)
+    {
+        if (length == 0)
             return -1;
-        }
 
-        int result = target->next->code;
+        if (code < 1 || code >= max_length) // the code out of range, or is the last one
+            return -1;
 
-        target->next->code = -1;
-        target->next = target->next->next;
+        // if (!killed.empty())
+        //     if (killed.find(code) != killed.end()) return -1; // if corresponding code have been killed
+        if (is_killed.size() != 0)
+            if (is_killed[code]) return -1;
+
+        node *object = &queue[code - 1];
+        node *target = object->next;
+
+        if (target == nullptr) // if the code is at the end of the list
+            return -1;
+
+        int result = target->code;
+
+        // killed.insert(result);
+        is_killed[result] = true;
+        target->code = -1;
+        object->next = target->next;
         length--;
-
-        while (head[code-2].code == -1) {
-            head[code-1] = &head[code-2];
-            head
-        }
 
         return result;
     }
-
-    node* head;
-    int length;
 };
 
+int main()
+{
+    /*
+        namings:
 
-int main() {
-    int total, count;
+        node: each element of the linked list, as well as each person.
+        linked_list: the entire queue of people.
+        total: total number of people.
+        count: number of person being killed.
+        index: the index of the person. (1<= index <= total)
+        code: the number on each person/node. (1<= index <= total), same as index at the beginning.
+    */
+    int total, count, index;
+    stringstream get_index_ss;
+    string get_index_s;
 
-    /*while (cin >> total) {
-        string printed = "1"+to_string(3)+"\n";
-        printf("%s",(to_string(total) + "\n").c_str());
-    }*/
+    while (cin >> total >> count)
+    {
+        cin.ignore();
+        linked_list queue(total);
 
-    while (cin >> total) {
-        int index;
-        linked_queue queue = linked_queue(total);
-        scanf("%d", &count);
-        if (count <= 10000) {
-            for (int i = 0; i < count; i++) {
-                scanf("%d", &index);
 
-                int popping_code = queue.pop_node(index);
-                if (popping_code == -1) {
-                    printf("0u0 ...... ?\n");
-                    continue;
-                }
+        get_index_ss.clear();
+        getline(cin, get_index_s);
+        get_index_ss << get_index_s;
 
-                printf("%d\n", popping_code);
+        while (get_index_ss >> index)
+        {
+            int result = queue.pop_next_node(index);
+            if (result != -1) // if the corresponding index exists
+                printf("%d\n", result);
+            else
+            { // if the corresponding index does not exist
+                printf("0u0 ...... ?\n");
             }
-        } else {
-            string result = "";
-            int counter = 0;
-            cout << total << endl;
-            for (int i = 0; i < count; i++) {
-                scanf("%d", &index);
-
-                int popping_code = queue.pop_node(index);
-                if (popping_code == -1) {
-                    result += "0u0 ...... ?\n";
-                    continue;
-                }
-                else result += to_string(popping_code) + "\n";
-
-                counter++;
-                if(counter == 100000) {
-                    printf("%s",result.c_str());
-                    counter = 0;
-                    result = "";
-                }
-            }
-            printf("%s",result.c_str());
         }
     }
 

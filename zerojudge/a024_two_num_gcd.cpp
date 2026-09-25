@@ -1,6 +1,8 @@
 #include <iostream>
 using namespace std;
 
+/* this question seems to be same to a738, see the solution with recursive method using euclidean algorithm*/
+
 int main(){
 	int a,b;
 	int max,min;

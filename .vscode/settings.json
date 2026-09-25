@@ -93,7 +93,11 @@
     "streambuf": "cpp",
     "cinttypes": "cpp",
     "typeinfo": "cpp",
-    "complex": "cpp"
+    "complex": "cpp",
+    "chrono": "cpp",
+    "unordered_set": "cpp",
+    "set": "cpp",
+    "valarray": "cpp"
   },
   "C_Cpp.errorSquiggles": "enabled",
   "C_Cpp_Runner.useAddressSanitizer": false,
