@@ -1,8 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <cmath>
 #include <complex>
-#include <algorithm>
 using namespace std;
 
 vector<complex<long double>> fast_fourier_transform(const vector<complex<long double>> &A, bool inverse = false) {
@@ -19,12 +17,18 @@ vector<complex<long double>> fast_fourier_transform(const vector<complex<long do
     vector<complex<long double>> O = fast_fourier_transform(odd, inverse);
     vector<complex<long double>> result;
 
+    complex<long double> a[E.size()]; 
+    complex<long double> b = polar((long double) 1.0, (long double) dir * 2.0 * M_PI / A.size());
+    a[0] = 1;
+    for (int j = 1; j < E.size(); j++) {
+        a[j] = a[j - 1] * b;
+    }
     for (int j = 0; j < E.size(); j++) {
-        result.push_back(E[j] + polar((long double) 1.0, (long double) dir * 2.0f * M_PI * j / A.size()) * O[j]);
+        result.push_back(E[j] + a[j] * O[j]);
     }
 
     for (int j = 0; j < E.size(); j++) {
-        result.push_back(E[j] - polar((long double) 1.0, (long double) dir * 2.0f * M_PI * j / A.size()) * O[j]);
+        result.push_back(E[j] - a[j] * O[j]);
     }
 
     return result;
@@ -57,12 +61,6 @@ public:
     vector<long long> digits = vector<long long>(digits_size, 0);
     long long most_significant_digit = 0;
     Large() {}
-    Large(int x) {
-        *this = Large((long long)x);
-    }
-    Large(long x) {
-        *this = Large((long long)x);
-    }
     Large(long long x) {
         is_negative = (x < 0);
         is_zero = (x == 0);
@@ -99,26 +97,12 @@ public:
 
         is_zero = (most_significant_digit == 0);
     }
-    Large operator=(const Large &B) {
-        digits = B.digits;
-        is_zero = B.is_zero;
-        is_negative = B.is_negative;
-        most_significant_digit = B.most_significant_digit;
-        
-        return *this;
-    }
-    template <typename T>
-    Large operator=(const T &B) {
-        Large b(B);
-
-        digits = b.digits;
-        is_zero = b.is_zero;
-        is_negative = b.is_negative;
-        most_significant_digit = b.most_significant_digit;
-        
-        return *this;
-    }
     bool operator==(const Large &B) const {
+        if (most_significant_digit != B.most_significant_digit) return false;
+        if (is_negative != B.is_negative) return false;
+        if (is_zero != B.is_zero) return false;
+        if (is_zero) return is_zero == B.is_zero;
+
         for (long long i = digits_size - 1; i >= 0; i--) {
             if (digits[i] != B.digits[i]) {
                 return false;
@@ -127,43 +111,7 @@ public:
         
         return true;
     }
-    template <typename T>
-    bool operator==(const T &B) const {
-        Large b(B);
 
-        return *this == b;
-    }
-    bool operator!=(const Large &B) const {
-        return !(*this == B);
-    }
-    bool operator>(const Large &B) const {
-        for (long long i = digits_size - 1; i >= 0; i--) {
-            if (digits[i] > B.digits[i]) {
-                return true;
-            } else if (digits[i] < B.digits[i]) {
-                return false;
-            }
-        }
-        
-        return false;
-    }
-    bool operator<(const Large &B) const {
-        for (long long i = digits_size - 1; i >= 0; i--) {
-            if (digits[i] < B.digits[i]) {
-                return true;
-            } else if (digits[i] > B.digits[i]) {
-                return false;
-            }
-        }
-        
-        return false;
-    }
-    bool operator>=(const Large &B) const {
-        return !(*this < B);
-    }
-    bool operator<=(const Large &B) const {
-        return !(*this > B);
-    }
     Large operator-() const {
         Large result = *this;
         if (is_zero) return result;
@@ -172,16 +120,12 @@ public:
         
         return result;
     }
-    friend Large operator+(const Large &A, const Large &B);
-    friend Large operator-(const Large &A, const Large &B);
     friend Large operator*(const Large &A, const Large &B);
-    friend Large operator/(const Large &A, const Large &B);
-    friend Large operator^(const Large &A, const Large &B);
-    friend Large operator>>(const Large &A, const Large &B);
-    friend Large operator<<(const Large &A, const Large &B);
-    //     return *this = *this % B;
-    // }
+    friend Large operator^(const Large &A, const long long &B);
 };
+
+const Large zero = Large(0);
+const Large one = Large(1);
 
 istream &operator>>(istream &is, Large &A) {
     string a;
@@ -225,107 +169,10 @@ ostream &operator<<(ostream &os, const Large &A) {
     return os;
 }
 
-void shift_left(vector<long long> &A, long long k) {
-    if (k <= 0) return;
-
-    A.erase(A.begin(), A.begin() + k);
-    return;
-}
-
-void shift_right(vector<long long> &A, long long k) {
-    if (k <= 0) return;
-
-    if (k >= A.size()) {
-        A.clear();
-        A.push_back(0);
-        return;
-    }
-
-    A.insert(A.begin(), k, 0);
-    return;
-}
-
-Large operator+(const Large &A, const Large &B) {
-    if (A.is_zero) return B;
-    if (B.is_zero) return A;
-
-    if (A.is_negative) {
-        if (B.is_negative) {
-            return -(-A + -B);
-        } else {
-            return B - -A;
-        }
-    } else {
-        if (B.is_negative) {
-            return A - -B;
-        }
-    }
-
-    long long carry = 0;
-    Large result;
-    result.most_significant_digit = max(A.most_significant_digit, B.most_significant_digit);
-    for (long long i = 0; i <= result.most_significant_digit ; i++) {
-        result.digits[i] = A.digits[i] + B.digits[i] + carry;
-        carry = (result.digits[i] >= Large::base);
-        if (carry) result.digits[i] -= Large::base;
-    }
-
-    result.is_negative = A.is_negative;
-    result.is_zero = false;
-
-
-    if (result.digits[result.most_significant_digit] != 0) result.most_significant_digit++;
-    
-    return result;
-}
-
-Large operator-(const Large &A, const Large &B) {
-    if (A.is_zero) return -B;
-    if (B.is_zero) return A;
-
-    if (A.is_negative) {
-        if (B.is_negative) {
-            return -(-A - -B);
-        } else {
-            return -A + B;
-        }
-    } else {
-        if (B.is_negative) {
-            return -(-A - -B);
-        }
-    }
-
-    if (A < B) {
-        return -(B - A);
-    }
-
-    if (A == B) return Large(0);
-    
-    long long carry = 0;
-    Large result;
-    result.most_significant_digit = max(A.most_significant_digit, B.most_significant_digit);
-    result.is_negative = false;
-    long long most_significant_digit = result.most_significant_digit;
-    for (long long i = 0; i <= result.most_significant_digit; i++) {
-        result.digits[i] = A.digits[i] - B.digits[i] - carry;
-        
-        if (result.digits[i] < 0) {
-            result.digits[i] += Large::base;
-            carry = 1;
-        } else if (result.digits[i] > 0) {
-            most_significant_digit = i+1;
-        }
-    }
-    result.most_significant_digit = most_significant_digit;
-    result.is_zero = result.most_significant_digit == 0;
-    
-    return result;
-}
-
 Large operator*(const Large &A, const Large &B) {
     //using FFT algorithm
 
-    if (A.is_zero || B.is_zero) return Large(0);
+    if (A.is_zero || B.is_zero) return zero;
 
     if (A.is_negative) {
         if (B.is_negative) {
@@ -371,138 +218,18 @@ Large operator*(const Large &A, const Large &B) {
     return result;
 }
 
-Large operator/(const Large &A, const Large &B) {
-    if (A.is_zero) return Large(0);
-    if (B.is_zero) {
-        throw runtime_error("divide by zero");
-    }
+Large operator^(const Large &A, const long long &B) {
+    if (B == 0) return one;
+    if (A.is_zero) return zero;
+    if (A == one) return one;
+    if (B == 1) return A;
 
-    if (A == B) return Large(1);
-
-    if (B == Large(1)) return A;
-
-    if (A.is_negative) {
-        if (B.is_negative) {
-            return -A / -B;
-        } else {
-            return -(-A / B);
-        }
-    } else {
-        if (B.is_negative) {
-            return -(A / -B);
-        }
-    }
-
-    if (A < B) {
-        return Large(0);
-    }
-
-    // divident / divisor = quotient * divisor + remainder
-    Large quotient = 0;
-    Large remainder = A;
-    Large divisor = B;
-    long long carry = 0;
-    bool leading_zero_decrease_flag = false;
-    quotient.is_negative = false;
-    quotient.is_zero = false;
-    quotient.most_significant_digit = A.most_significant_digit - B.most_significant_digit + 1;
-
-    divisor = divisor << quotient.most_significant_digit - 1;
-    bool is_leading_zero = true;
-    
-    for (long long i = 0; i < quotient.most_significant_digit; i++) {
-        long long divident = (remainder.digits[A.most_significant_digit - 1 - i] + carry) / divisor.digits[divisor.most_significant_digit - 1];
-        for (long long j = 1; j <= divisor.most_significant_digit; j++) {
-            if (
-                    (
-                        j == 1 && 
-                        (remainder.digits[divisor.most_significant_digit - j] + carry) < divident * divisor.digits[divisor.most_significant_digit - j]
-                    ) || (
-                        j != 1 &&
-                        remainder.digits[divisor.most_significant_digit - j] < divident * divisor.digits[divisor.most_significant_digit - j]
-                    )
-                ) {
-                divident--;
-                continue;
-            }
-        }
-
-        if (divident == 0 && is_leading_zero) {
-            leading_zero_decrease_flag = true;
-        }
-        is_leading_zero = false;
-
-        if (divident == 0 && remainder.digits[A.most_significant_digit - 1 - i]) {
-            carry = Large::base * remainder.digits[A.most_significant_digit - 1 - i];
-            remainder = (remainder - divisor * divident);
-        } else {
-            remainder = (remainder - divisor * divident);
-            carry = Large::base * remainder.digits[divisor.most_significant_digit - 1];
-        }
-
-        quotient.digits[quotient.most_significant_digit - i - 1] = divident;
-
-        divisor = divisor >> 1;
-    }
-
-    if (leading_zero_decrease_flag) {
-        quotient.most_significant_digit--;
-    }
-
-    return quotient;
-}
-
-Large operator>>(const Large &A, const Large &B) {
-    /*
-        Instead of divide by two, it divide by Large::base,
-        Same as shifting entire Large.digits.
-    */
-    if (A.is_zero) return Large(0);
-    if (B.is_zero) return A;
-    if (B.is_negative) return Large(0);
-    if (B.digits[0] > Large::base) return Large(0);
-    if (B.digits[0] > A.most_significant_digit) return Large(0);
-    Large result = A;
-
-    shift_left(result.digits, B.digits[0]);
-
-    result.is_zero = false;
-    result.most_significant_digit = A.most_significant_digit - B.digits[0];
-
-    return result;
-}
-
-Large operator<<(const Large &A, const Large &B) {
-    /*
-        Instead of divide by two, it divide by Large::base,
-        Same as shifting entire Large.digits.
-    */
-    if (A.is_zero) return Large(0);
-    if (B.is_zero) return A;
-    if (B.is_negative) return Large(0);
-    if (B.digits[0] > Large::base) return Large(0);
-    Large result = A;
-
-    shift_right(result.digits, B.digits[0]);
-
-    result.is_zero = false;
-    result.most_significant_digit = A.most_significant_digit + B.digits[0];
-
-    return result;
-}
-
-Large operator^(const Large &A, const Large &B) {
-    if (B.is_zero) return Large(1);
-    if (A.is_zero) return Large(0);
-    if (A == Large(1)) return Large(1);
-    if (B == Large(1)) return A;
-
-    if (A.is_negative) return (B.digits[0] % 2 == 0)? A : -A;
-    if (B.is_negative) return 0;
+    if (A.is_negative) return (B % 2 == 0)? -A ^ B : -(-A ^ B);
+    if (B < 0) return 0;
 
     Large result = A;
     
-    if (B.digits[0] % 2 == 0) {
+    if (B % 2 == 0) {
         result = result ^ (B / 2);
         result = result * result;
     } else {
@@ -515,12 +242,10 @@ Large operator^(const Large &A, const Large &B) {
 }
 
 int main() {
-
-    long long aa, bb;
-    Large a, b, c;
-    while (cin >> aa >> bb) {
-        if (aa == 0 || bb == 0) break;
-        Large a(aa), b(bb);
+    Large a, c;
+    long long b;
+    while (cin >> a >> b) {
+        if (a == 0 || b == 0) break;
         c = a ^ b;
         cout << c << endl;
     }
