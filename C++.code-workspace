@@ -101,6 +101,12 @@
 			"thread": "cpp",
 			"format": "cpp",
 			"variant": "cpp"
-		}
+		},
+		"cSpell.words": [
+			"constexpr",
+			"cout",
+			"endl",
+			"llround"
+		]
 	}
 }
