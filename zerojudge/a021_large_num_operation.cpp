@@ -43,9 +43,7 @@ vector<complex<long double>> inverse_fast_fourier_transform(const vector<complex
 
 constexpr long long power(long long base, long long exp) {
     long long res = 1;
-    for (long long i = 0; i < exp; ++i) {
-        res *= base;
-    }
+    for (long long i = 0; i < exp; ++i) res *= base;
     return res;
 }
 class Large{
@@ -76,28 +74,19 @@ public:
     }
     Large(string x) {
         if (x == "0" || x == "-0") return;
-
         is_negative = (x[0] == '-');
-        if (is_negative) {
-            x.erase(0, 1);
-        }
-
+        if (is_negative) x.erase(0, 1);
         long long buffer = 0;
         most_significant_digit = ceil((long long)x.length() / (long double) Large::base_digit);
         for (long long i = 0; i < x.length(); i++) {
             buffer *= 10;
-            if (x[i] - '0' > 9 || x[i] - '0' < 0) {
-                throw invalid_argument("Invalid input of string: " + (is_negative? ("-" + x) : ("" + x) + "\nThere's a character " + x[i] + "in the string at index of " + char(i) + "."));
-            }
-
+            if (x[i] - '0' > 9 || x[i] - '0' < 0) throw invalid_argument("Invalid input of string: " + (is_negative? ("-" + x) : ("" + x) + "\nThere's a character " + x[i] + "in the string at index of " + char(i) + "."));
             buffer += x[i] - '0';
-
             if (i % Large::base_digit == ((long long)((Large::base_digit - 1 + x.length()) % Large::base_digit))) {
                 digits[(x.length() - i) / Large::base_digit] = buffer;
                 buffer = 0;
             }
         }
-
         is_zero = (most_significant_digit == 0);
     }
     Large operator=(const Large &B) {
@@ -143,9 +132,9 @@ public:
     friend Large operator-(const Large &A, const Large &B);
     friend Large operator*(const Large &A, const Large &B);
     friend Large operator/(const Large &A, const Large &B);
-    friend Large operator^(const Large &A, const Large &B);
-    friend Large operator>>(const Large &A, const Large &B);
-    friend Large operator<<(const Large &A, const Large &B);
+    friend Large operator^(const Large &A, const long long &B);
+    // friend Large operator>>(const Large &A, const Large &B);
+    // friend Large operator<<(const Large &A, const Large &B);
 };
 
 istream &operator>>(istream &is, Large &A) {
@@ -162,69 +151,40 @@ ostream &operator<<(ostream &os, const Large &A) {
     }
     if (A.is_negative) os << "-";
 
-    bool is_leading_zero = true;
-    bool is_leading_digit = false;
-    for (long long i = A.most_significant_digit - 1; i >= 0; i--) {
-        if (is_leading_zero) {
-            if (A.digits[i] == 0) continue;
-            is_leading_zero = false;
-            is_leading_digit = true;
-        }
-        
-        if (is_leading_digit) {
-            os << A.digits[i];
-            os.width(Large::base_digit);
-            os.fill('0');
-            is_leading_digit = false;
-        } else if (A.digits[i] == 0) {
-            os.width(Large::base_digit);
-            os << A.digits[i];
-        } else {
-            os.width(Large::base_digit);
-            os << A.digits[i];
-        }
+    os << A.digits[A.most_significant_digit - 1];
+    for (long long i = A.most_significant_digit - 2; i >= 0; i--) {
+        os.width(Large::base_digit);
+        os.fill('0');
+        os << A.digits[i];
     }
     os.width(0);
     os.fill(' ');
-    
     return os;
 }
 
 void shift_left(vector<long long> &A, long long k) {
     if (k <= 0) return;
-
     A.erase(A.begin(), A.begin() + k);
     return;
 }
-
 void shift_right(vector<long long> &A, long long k) {
     if (k <= 0) return;
-
     if (k >= A.size()) {
         A.clear();
         A.push_back(0);
         return;
     }
-
     A.insert(A.begin(), k, 0);
     return;
 }
-
 Large operator+(const Large &A, const Large &B) {
     if (A.is_zero) return B;
     if (B.is_zero) return A;
 
     if (A.is_negative) {
-        if (B.is_negative) {
-            return -(-A + -B);
-        } else {
-            return B - -A;
-        }
-    } else {
-        if (B.is_negative) {
-            return A - -B;
-        }
-    }
+        if (B.is_negative) return -(-A + -B);
+        else return B - -A;
+    } else if (B.is_negative) return A - -B;
 
     long long carry = 0;
     Large result;
@@ -243,29 +203,17 @@ Large operator+(const Large &A, const Large &B) {
     
     return result;
 }
-
 Large operator-(const Large &A, const Large &B) {
     if (A.is_zero) return -B;
     if (B.is_zero) return A;
-
     if (A.is_negative) {
-        if (B.is_negative) {
-            return -(-A - -B);
-        } else {
-            return -A + B;
-        }
-    } else {
-        if (B.is_negative) {
-            return -(-A - -B);
-        }
-    }
-
+        if (B.is_negative) return -(-A - -B);
+        else return -A + B;
+    } else if (B.is_negative) return -(-A - -B);
     if (A < B) {
         return -(B - A);
     }
-
     if (A == B) return Large(0);
-    
     long long carry = 0;
     Large result;
     result.most_significant_digit = max(A.most_significant_digit, B.most_significant_digit);
@@ -277,37 +225,22 @@ Large operator-(const Large &A, const Large &B) {
         if (result.digits[i] < 0) {
             result.digits[i] += Large::base;
             carry = 1;
-        } else if (result.digits[i] > 0) {
-            most_significant_digit = i+1;
-        }
+        } else if (result.digits[i] > 0) most_significant_digit = i+1;
     }
     result.most_significant_digit = most_significant_digit;
     result.is_zero = result.most_significant_digit == 0;
-    
     return result;
 }
-
 Large operator*(const Large &A, const Large &B) {
     //using FFT algorithm
-
     if (A.is_zero || B.is_zero) return Large(0);
-
     if (A.is_negative) {
-        if (B.is_negative) {
-            return -A * -B;
-        } else {
-            return -(-A * B);
-        }
-    } else {
-        if (B.is_negative) {
-            return -(A * -B);
-        }
-    }
-
+        if (B.is_negative) return -A * -B;
+        else return -(-A * B);
+    } else if (B.is_negative) return -(A * -B);
     long long k = A.most_significant_digit + B.most_significant_digit - 1;
     long long n = 1;
     for (; n <= k; n *= 2);
-
     vector<complex<long double>> A_complex(n);
     vector<complex<long double>> B_complex(n);
     for (int i = 0; i < n; i++) {
@@ -316,11 +249,8 @@ Large operator*(const Large &A, const Large &B) {
     }
     A_complex = fast_fourier_transform(A_complex);
     B_complex = fast_fourier_transform(B_complex);
-    for (int i = 0; i < n; i++) {
-        A_complex[i] *= B_complex[i];
-    }
+    for (int i = 0; i < n; i++) A_complex[i] *= B_complex[i];
     A_complex = inverse_fast_fourier_transform(A_complex);
-
     long long carry = 0;
     long long current = 0;
     Large result;
@@ -330,12 +260,11 @@ Large operator*(const Large &A, const Large &B) {
         carry = current / Large::base;
         result.digits[i] = current % Large::base;
     }
-
+    if (result.digits[result.most_significant_digit - 1] == 0) result.most_significant_digit--;
     result.is_negative = false;
     result.is_zero = false;
     return result;
 }
-
 Large operator/(const Large &A, const Large &B) {
     if (A.is_zero) return Large(0);
     if (B.is_zero) {
@@ -416,55 +345,36 @@ Large operator/(const Large &A, const Large &B) {
 
     return quotient;
 }
-
 Large operator>>(const Large &A, const Large &B) {
-    /*
-        Instead of divide by two, it divide by Large::base,
-        Same as shifting entire Large.digits.
-    */
     if (A.is_zero) return Large(0);
     if (B.is_zero) return A;
     if (B.is_negative) return Large(0);
     if (B.digits[0] > Large::base) return Large(0);
     if (B.digits[0] > A.most_significant_digit) return Large(0);
     Large result = A;
-
     shift_left(result.digits, B.digits[0]);
-
     result.is_zero = false;
     result.most_significant_digit = A.most_significant_digit - B.digits[0];
-
     return result;
 }
-
 Large operator<<(const Large &A, const Large &B) {
-    /*
-        Instead of divide by two, it divide by Large::base,
-        Same as shifting entire Large.digits.
-    */
     if (A.is_zero) return Large(0);
     if (B.is_zero) return A;
     if (B.is_negative) return Large(0);
     if (B.digits[0] > Large::base) return Large(0);
     Large result = A;
-
     shift_right(result.digits, B.digits[0]);
-
     result.is_zero = false;
     result.most_significant_digit = A.most_significant_digit + B.digits[0];
-
     return result;
 }
-
 Large operator^(const Large &A, const long long &B) {
     if (B == 0) return Large(1);
     if (A.is_zero) return Large(0);
     if (A == Large(1)) return Large(1);
     if (B == 1) return A;
-
     if (A.is_negative) return (B % 2 == 0)? -A ^ B : -(-A ^ B);
     if (B < 0) return 0;
-
     Large result = A;
     
     if (B % 2 == 0) {
@@ -475,23 +385,19 @@ Large operator^(const Large &A, const long long &B) {
         result = result * result;
         result = result * A;
     }
-
     return result;
 }
-
 int main() {
     Large a, c;
     char b;
     while (cin >> a >> b >> c) {
         if (a == 0 || b == 0) break;
-
         if (b == '+') a = a + c;
         if (b == '-') a = a - c;
         if (b == '*') a = a * c;
         if (b == '/') a = a / c;
-        if (b == '^') a = a ^ c;
-        cout << c << endl;
+        // if (b == '^') a = a ^ c;
+        cout << a << endl;
     }
-
     return 0;
 }
